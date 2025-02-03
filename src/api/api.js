@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-// const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
+// const API_BASE_URL = "http://127.0.0.1:8000";
 
 const getAuthHeaders = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
