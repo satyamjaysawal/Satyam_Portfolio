@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { 
-  ShoppingCart, 
-  Menu, 
-  X, 
-  Bell, 
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  Bell,
   ShoppingBag,
   User,
   Heart,
@@ -16,281 +16,348 @@ import {
 } from "lucide-react";
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);  // Get user from AuthContext
+  const { user, logout } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");  // New search state
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
-  const navigate = useNavigate();  // Navigate for redirecting on search
+  const navigate = useNavigate();
 
-  // Handle scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+  useEffect(() => setMenuOpen(false), [location]);
 
-  // Handle search submit
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = useCallback((e) => {
     e.preventDefault();
-    if (searchQuery) {
-      navigate(`/products?search=${searchQuery}`);  // Redirect with search query as URL parameter
-    } else {
-      // If search query is empty, reset or close search
-      navigate('/products');  // You can change this logic as per your needs
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${searchQuery}`);
     }
-  };
+  }, [searchQuery, navigate]);
 
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
   return (
-    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-300
-      ${scrolled 
-        ? 'bg-blue-900/95 backdrop-blur-lg shadow-lg'  // Changed to eCommerce Blue
-        : 'bg-blue-800/80'}`}>  {/* Adjusted background for normal state */}
-
-      <div className="container mx-auto flex justify-between items-center px-5 py-3">
+    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gray-900/85 backdrop-blur-lg shadow-lg' : 'bg-gray-900/60'}`}>
+      <div className="container mx-auto flex justify-between items-center px-4 py-4">
         {/* Logo */}
-        <Link 
-          to="/" 
-          className="text-2xl font-extrabold text-white flex items-center space-x-2 group"
-        >
-          <ShoppingCart className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent text-xl">
-            E-Commerce
-          </span>
+        <Link to="/" className="text-2xl font-extrabold text-white flex items-center space-x-2 group">
+          <ShoppingCart className="w-6 h-6 text-teal-400 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent">E-Commerce</span>
         </Link>
 
-        {/* Left-aligned Navigation Links with Icons */}
-        <div className="flex items-center space-x-5 text-sm text-white">
-          <Link 
-            to="/products" 
-            className="flex items-center hover:text-teal-300 transition-all relative group"
-          >
-            <ShoppingBag className="w-5 h-5 mr-1" /> 
-            Products
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-300 transition-all group-hover:w-full" />
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6 text-sm">
+          <Link to="/products" className="nav-link group">
+            <ShoppingBag className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
+            <span className="ml-1">Products</span>
+            <span className="nav-link-underline" />
           </Link>
-          {user && (  // Show cart, orders, wishlist only if the user is logged in
+
+          {/* No Role Restriction for these links */}
+          <Link to="/dashboard" className="nav-link group">
+            <span className="ml-1">Dashboard</span>
+            <span className="nav-link-underline" />
+          </Link>
+
+          <Link to="/sale-analytics" className="nav-link group">
+            <span className="ml-1">Sale Analytics</span>
+            <span className="nav-link-underline" />
+          </Link>
+
+          {user?.role === 'customer' && (
             <>
-              <Link 
-                to="/cart" 
-                className="flex items-center hover:text-teal-300 transition-all relative group"
-              >
-                <ShoppingCart className="w-5 h-5 mr-1" /> 
-                Cart
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-300 transition-all group-hover:w-full" />
+              <Link to="/cart" className="nav-link group">
+                <ShoppingCart className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
+                <span className="ml-1">Cart</span>
+                <span className="nav-link-underline" />
               </Link>
-              <Link 
-                to="/orders" 
-                className="flex items-center hover:text-teal-300 transition-all relative group"
-              >
-                <ShoppingBag className="w-5 h-5 mr-1" /> 
-                Orders
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-300 transition-all group-hover:w-full" />
+              
+              <Link to="/orders" className="nav-link group">
+                <ShoppingBag className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
+                <span className="ml-1">Orders</span>
+                <span className="nav-link-underline" />
               </Link>
-              {/* Wishlist Link */}
-              <Link 
-                to="/wishlist" 
-                className="flex items-center hover:text-teal-300 transition-all relative group"
-              >
-                <Heart className="w-5 h-5 mr-1" /> 
-                Wishlist
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-300 transition-all group-hover:w-full" />
+
+              <Link to="/wishlist" className="nav-link group">
+                <Heart className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
+                <span className="ml-1">Wishlist</span>
+                <span className="nav-link-underline" />
               </Link>
             </>
           )}
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="flex items-center space-x-2">
-          <input 
-            type="text" 
-            placeholder="Search products..." 
-            value={searchQuery} 
-            onChange={handleSearchChange} 
-            className="bg-white text-gray-700 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
-          />
-          <button type="submit" className="text-teal-600">
-            <Search className="w-5 h-5" />
-          </button>
+        <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center">
+          <div className="relative group">
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="bg-gray-800/50 text-white pl-4 pr-10 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 placeholder-gray-400 w-64 transition-all duration-300"
+            />
+            <button 
+              type="submit" 
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-400 transition-colors duration-300"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
         </form>
 
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-3">
+        {/* User Actions */}
+        <div className="hidden md:flex items-center space-x-4">
           {user ? (
-            <>
-              {/* Notifications */}
-              <button className="text-white hover:text-teal-300 transition-colors p-2 relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <div className="flex items-center space-x-4">
+              <button className="relative group">
+                <Bell className="w-5 h-5 text-gray-300 group-hover:text-teal-400 transition-colors duration-300" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
               </button>
 
-              {/* User Menu */}
-              <div className="flex items-center space-x-2">
-                {/* Display username only when the user is logged in */}
-                <Link to="/profile" className="text-white text-sm font-medium hover:text-teal-300">
-                  <span className="text-xs text-gray-300">Welcome back,</span>
-                  <span>{user.username}</span>
+              <div className="flex items-center space-x-3">
+                <Link to="/profile" className="group">
+                  <span className="text-xs text-gray-400 block">Welcome back</span>
+                  <span className="text-sm text-white group-hover:text-teal-400 transition-colors duration-300">
+                    {user.username}
+                  </span>
                 </Link>
                 <button 
-                  onClick={logout} 
-                  className="bg-red-600/90 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-all shadow-lg
-                    hover:shadow-red-500/20 hover:-translate-y-0.5 active:translate-y-0"
+                  onClick={logout}
+                  className="bg-red-500/80 hover:bg-red-600 px-4 py-2 rounded-lg text-white
+                    transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-red-500/20"
+                  aria-label="Logout"
                 >
                   Logout
                 </button>
               </div>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex items-center space-x-3">
               <Link 
-                to="/login" 
-                className="bg-teal-600/90 hover:bg-teal-700 px-3 py-1.5 rounded-lg transition-all shadow-lg
-                  hover:shadow-teal-500/20 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-1"
+                to="/login"
+                className="flex items-center space-x-1 bg-teal-500/80 hover:bg-teal-600 px-4 py-2 
+                  rounded-lg text-white transition-all duration-300 transform 
+                  hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-teal-500/20"
               >
                 <User className="w-4 h-4" />
-                Login
+                <span>Login</span>
               </Link>
+              
               <Link 
-                to="/register" 
-                className="bg-green-600/90 hover:bg-green-700 px-3 py-1.5 rounded-lg transition-all shadow-lg
-                    hover:shadow-green-500/20 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-1"
+                to="/register"
+                className="flex items-center space-x-1 bg-blue-500/80 hover:bg-blue-600 px-4 py-2 
+                  rounded-lg text-white transition-all duration-300 transform 
+                  hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-blue-500/20"
               >
                 <UserPlus className="w-4 h-4" />
-                Register
+                <span>Register</span>
               </Link>
-            </>
+            </div>
           )}
-          {/* Mobile App Download Button */}
+
           <a 
-            href="#"  // Replace with actual link
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-lg transition-all shadow-lg text-white flex items-center"
-            >
-            <Smartphone className="w-5 h-5 mr-1" />
-            <span className="text-sm">App</span>
-            </a>
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1 bg-purple-500/80 hover:bg-purple-600 px-4 py-2 
+              rounded-lg text-white transition-all duration-300 transform 
+              hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-purple-500/20"
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>App</span>
+          </a>
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-white focus:outline-none"
+          className="md:hidden text-white p-2 hover:bg-gray-800/50 rounded-lg
+            transition-colors duration-300"
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         >
           {menuOpen ? (
-            <X className="w-7 h-7 hover:rotate-90 transition-transform" />
+            <X className="w-6 h-6 hover:rotate-90 transition-transform duration-300" />
           ) : (
-            <Menu className="w-7 h-7" />
+            <Menu className="w-6 h-6" />
           )}
         </button>
       </div>
 
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden bg-blue-900/95 backdrop-blur-lg absolute top-full left-0 w-full 
-          transform transition-all duration-300 ease-in-out ${menuOpen ? 'translate-y-0' : '-translate-y-full'}`}
+        className={`md:hidden absolute top-full left-0 w-full bg-gray-900/95 backdrop-blur-lg
+          transform transition-all duration-300 ease-in-out border-t border-gray-800
+          ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
       >
-        <div className="p-5 flex flex-col items-center space-y-3">
-          <Link 
-            to="/products" 
-            className="text-white text-sm hover:text-teal-300 transition-all w-full text-center py-2"
-          >
-            Products
-          </Link>
-          
-          {user && (
-            <>
-              <Link 
-                to="/cart" 
-                className="text-white text-sm hover:text-teal-300 transition-all w-full text-center py-2"
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <ShoppingBag className="w-5 h-5" />
-                  Cart
-                </div>
-              </Link>
-              <Link 
-                to="/orders" 
-                className="text-white text-sm hover:text-teal-300 transition-all w-full text-center py-2"
-              >
-                Orders
-              </Link>
-              {/* Wishlist Link in Mobile Menu */}
-              <Link 
-                to="/wishlist" 
-                className="text-white text-sm hover:text-teal-300 transition-all w-full text-center py-2"
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <Heart className="w-5 h-5" />
-                  Wishlist
-                </div>
-              </Link>
-            </>
-          )}
+        <div className="p-4 space-y-4">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <input 
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full bg-gray-800/50 text-white pl-4 pr-10 py-2 rounded-lg
+                border border-gray-700 focus:outline-none focus:border-teal-400
+                placeholder-gray-400"
+            />
+            <button 
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 
+                hover:text-teal-400 transition-colors duration-300"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          </form>
 
-          {!user ? (
-            <div className="w-full space-y-2">
-              <Link 
-                to="/login" 
-                className="bg-teal-600/90 hover:bg-teal-700 px-3 py-1.5 rounded-lg transition-all shadow-lg
-                  w-full flex items-center justify-center gap-1"
-              >
-                <User className="w-4 h-4" />
-                Login
-              </Link>
-              <Link 
-                to="/register" 
-                className="bg-green-600/90 hover:bg-green-700 px-3 py-1.5 rounded-lg transition-all shadow-lg
-                hover:shadow-green-500/20 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-1"
-              >
-                <KeyRound className="w-4 h-4" />
-                Register
-              </Link>
-            </div>
-          ) : (
-            <div className="w-full space-y-3">
-              <div className="text-center">
-                <span className="text-xs text-gray-300">Logged in as</span>
-                <span className="block text-sm font-medium text-white">{user.username}</span>
+          {/* Mobile Navigation Links */}
+          <div className="space-y-3">
+            <Link 
+              to="/products"
+              className="flex items-center space-x-2 text-gray-300 hover:text-teal-400
+                transition-colors duration-300 py-2"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              <span>Products</span>
+            </Link>
+            {/* No Role Restriction */}
+            <Link to="/dashboard" className="nav-link group">
+              <span className="ml-1">Dashboard</span>
+              <span className="nav-link-underline" />
+            </Link>
+
+            <Link to="/sale-analytics" className="nav-link group">
+              <span className="ml-1">Sale Analytics</span>
+              <span className="nav-link-underline" />
+            </Link>
+
+            {user?.role === 'customer' && (
+              <>
+                <Link 
+                  to="/cart"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-teal-400
+                    transition-colors duration-300 py-2"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Cart</span>
+                </Link>
+
+                <Link 
+                  to="/orders"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-teal-400
+                    transition-colors duration-300 py-2"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  <span>Orders</span>
+                </Link>
+
+                <Link 
+                  to="/wishlist"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-teal-400
+                    transition-colors duration-300 py-2"
+                >
+                  <Heart className="w-5 h-5" />
+                  <span>Wishlist</span>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile User Actions */}
+          <div className="space-y-3 pt-3 border-t border-gray-800">
+            {user ? (
+              <>
+                <div className="text-center">
+                  <span className="text-xs text-gray-400">Logged in as</span>
+                  <span className="block text-sm text-white">{user.username}</span>
+                </div>
+                <button 
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  className="w-full bg-red-500/80 hover:bg-red-600 px-4 py-2 rounded-lg
+                    text-white transition-colors duration-300"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <Link 
+                  to="/login"
+                  className="flex items-center justify-center space-x-2 bg-teal-500/80
+                    hover:bg-teal-600 w-full px-4 py-2 rounded-lg text-white
+                    transition-colors duration-300"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Login</span>
+                </Link>
+
+                <Link 
+                  to="/register"
+                  className="flex items-center justify-center space-x-2 bg-blue-500/80
+                    hover:bg-blue-600 w-full px-4 py-2 rounded-lg text-white
+                    transition-colors duration-300"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Register</span>
+                </Link>
               </div>
-              <button 
-                onClick={() => {
-                  logout();
-                  setMenuOpen(false);
-                }} 
-                className="bg-red-600/90 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-all shadow-lg w-full"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-          {/* Mobile App Download Button */}
-          <a 
-            href="https://example.com/download"  // Replace with actual link
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-lg transition-all shadow-lg text-white w-full text-center"
-          >
-            <Smartphone className="w-5 h-5 mr-1" /> Download App
-          </a>
+            )}
+
+            <a 
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center space-x-2 bg-purple-500/80
+                hover:bg-purple-600 w-full px-4 py-2 rounded-lg text-white
+                transition-colors duration-300"
+            >
+              <Smartphone className="w-4 h-4" />
+              <span>Download App</span>
+            </a>
+          </div>
         </div>
       </div>
+
+      {/* Add global styles for nav-link class */}
+      <style>{`
+        .nav-link {
+          display: flex;
+          align-items: center;
+          color: #e5e7eb;
+          position: relative;
+          padding: 0.5rem 0;
+        }
+
+        .nav-link-underline {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(to right, #2dd4bf, #60a5fa);
+          transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+          color: #2dd4bf;
+        }
+
+        .nav-link:hover .nav-link-underline {
+          width: 100%;
+        }
+      `}</style>
     </nav>
   );
 };
 
 export default Navbar;
-
-
