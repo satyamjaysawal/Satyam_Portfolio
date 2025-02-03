@@ -19,8 +19,10 @@ import ProductAdd from "./components/ProductAdd";
 import ProductEdit from "./components/ProductEdit";
 import AllOrders from "./components/AllOrders";
 import ManageShipments from "./components/ManageShipments";
+import SaleAnalyticsAdmin from "./components/SaleAnalyticsAdmin";
 // import Review from "./components/Review";
 // import Sale from "./components/Sale";
+import Chatbot from './components/Chatbot';
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -58,14 +60,19 @@ function App() {
 
 
                 <Route path="/orders-all" element={<AllOrders />} />
-                <Route path="/shipments" element={<ManageShipments />} />      
+                <Route path="/shipments" element={<ManageShipments />} />  
+                <Route path="/sale-analytics" element={<SaleAnalyticsAdmin/>} /> 
+
               </Route>
 
               {/* 404 Page */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+
           </main>
           <Footer />
+          {/* Global Chatbot Component */}
+          <Chatbot />
         </div>
       </Router>
     </AuthProvider>

@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { 
-  ShoppingCart, 
-  Menu, 
-  X, 
-  Bell, 
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  Bell,
   ShoppingBag,
   User,
   Heart,
@@ -24,50 +24,47 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+  useEffect(() => setMenuOpen(false), [location]);
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = useCallback((e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${searchQuery}`);
     }
-  };
+  }, [searchQuery, navigate]);
+
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
   return (
-    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-500
-      ${scrolled 
-        ? 'bg-gray-900/85 backdrop-blur-lg shadow-lg' 
-        : 'bg-gray-900/60'}`}>
-
+    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gray-900/85 backdrop-blur-lg shadow-lg' : 'bg-gray-900/60'}`}>
       <div className="container mx-auto flex justify-between items-center px-4 py-4">
         {/* Logo */}
-        <Link 
-          to="/" 
-          className="text-2xl font-extrabold text-white flex items-center space-x-2 group"
-        >
+        <Link to="/" className="text-2xl font-extrabold text-white flex items-center space-x-2 group">
           <ShoppingCart className="w-6 h-6 text-teal-400 group-hover:rotate-12 transition-transform duration-300" />
-          <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent">
-            E-Commerce
-          </span>
+          <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent">E-Commerce</span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6 text-sm">
-          <Link 
-            to="/products" 
-            className="nav-link group"
-          >
+          <Link to="/products" className="nav-link group">
             <ShoppingBag className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
             <span className="ml-1">Products</span>
+            <span className="nav-link-underline" />
+          </Link>
+
+          {/* No Role Restriction for these links */}
+          <Link to="/dashboard" className="nav-link group">
+            <span className="ml-1">Dashboard</span>
+            <span className="nav-link-underline" />
+          </Link>
+
+          <Link to="/sale-analytics" className="nav-link group">
+            <span className="ml-1">Sale Analytics</span>
             <span className="nav-link-underline" />
           </Link>
 
@@ -101,15 +98,13 @@ const Navbar = () => {
               type="text" 
               placeholder="Search products..." 
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-gray-800/50 text-white pl-4 pr-10 py-2 rounded-lg border border-gray-700
-                focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400
-                placeholder-gray-400 w-64 transition-all duration-300"
+              onChange={handleSearchChange}
+              className="bg-gray-800/50 text-white pl-4 pr-10 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 placeholder-gray-400 w-64 transition-all duration-300"
             />
             <button 
               type="submit" 
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 
-                hover:text-teal-400 transition-colors duration-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-400 transition-colors duration-300"
+              aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -135,8 +130,8 @@ const Navbar = () => {
                 <button 
                   onClick={logout}
                   className="bg-red-500/80 hover:bg-red-600 px-4 py-2 rounded-lg text-white
-                    transition-all duration-300 transform hover:-translate-y-0.5
-                    active:translate-y-0 shadow-lg hover:shadow-red-500/20"
+                    transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-red-500/20"
+                  aria-label="Logout"
                 >
                   Logout
                 </button>
@@ -167,7 +162,7 @@ const Navbar = () => {
           )}
 
           <a 
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-1 bg-purple-500/80 hover:bg-purple-600 px-4 py-2 
@@ -184,6 +179,7 @@ const Navbar = () => {
           className="md:hidden text-white p-2 hover:bg-gray-800/50 rounded-lg
             transition-colors duration-300"
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         >
           {menuOpen ? (
             <X className="w-6 h-6 hover:rotate-90 transition-transform duration-300" />
@@ -206,7 +202,7 @@ const Navbar = () => {
               type="text"
               placeholder="Search products..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="w-full bg-gray-800/50 text-white pl-4 pr-10 py-2 rounded-lg
                 border border-gray-700 focus:outline-none focus:border-teal-400
                 placeholder-gray-400"
@@ -215,6 +211,7 @@ const Navbar = () => {
               type="submit"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 
                 hover:text-teal-400 transition-colors duration-300"
+              aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -229,6 +226,16 @@ const Navbar = () => {
             >
               <ShoppingBag className="w-5 h-5" />
               <span>Products</span>
+            </Link>
+            {/* No Role Restriction */}
+            <Link to="/dashboard" className="nav-link group">
+              <span className="ml-1">Dashboard</span>
+              <span className="nav-link-underline" />
+            </Link>
+
+            <Link to="/sale-analytics" className="nav-link group">
+              <span className="ml-1">Sale Analytics</span>
+              <span className="nav-link-underline" />
             </Link>
 
             {user?.role === 'customer' && (
