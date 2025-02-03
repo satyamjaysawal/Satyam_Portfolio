@@ -32,3 +32,12 @@ export default defineConfig({
 //     'process.env': {} // In case you need to reference environment variables
 //   }
 // })
+
+// import { defineConfig } from 'vite';
+
+// -----------------------------------//
+// export default defineConfig({
+//   build: {
+//     outDir: 'dist',
+//   },
+// });
