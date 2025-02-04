@@ -67,7 +67,30 @@ const Navbar = () => {
             <span className="ml-1">Sale Analytics</span>
             <span className="nav-link-underline" />
           </Link>
-
+          {user?.role === 'admin' && (
+            <>
+              <Link to="/admin-analysis" className="nav-link group">
+                <span className="ml-1">Product Analysis +</span>
+                <span className="nav-link-underline" />
+              </Link>
+              {/* <Link to="/vendor/orders" className="nav-link group">
+                <span className="ml-1">Your Orders</span>
+                <span className="nav-link-underline" />
+              </Link> */}
+            </>
+          )}
+          {user?.role === 'vendor' && (
+            <>
+              <Link to="/add-product" className="nav-link group">
+                <span className="ml-1">Product Add +</span>
+                <span className="nav-link-underline" />
+              </Link>
+              {/* <Link to="/vendor/orders" className="nav-link group">
+                <span className="ml-1">Your Orders</span>
+                <span className="nav-link-underline" />
+              </Link> */}
+            </>
+          )}
           {user?.role === 'customer' && (
             <>
               <Link to="/cart" className="nav-link group">

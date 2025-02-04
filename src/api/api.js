@@ -7,6 +7,38 @@ const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
 const getAuthHeaders = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
+
+
+
+// API call to fetch products for analysis (Admin only)
+const getProductsForAnalysis = async (token) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/product/admin-product-analysis`, 
+      getAuthHeaders(token)
+    );
+    
+    // Debugging: Log the full response object
+    console.log("Response from API:", response);
+
+    // Log the response data specifically
+    console.log("Response Data:", response.data);
+    
+    return response.data; // returns the data containing the product analysis
+  } catch (error) {
+    console.error("Error fetching product analysis:", error);
+    // Debugging: Log the error response (if available)
+    if (error.response) {
+      console.log("Error Response:", error.response.data);
+    }
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
+// Export the function to be used in other parts of the application
+export { getProductsForAnalysis };
+
+
 // ========================= 🌟 REVIEWS =========================
 
 export const getProductReviews = async (productId, token) => {
@@ -339,7 +371,6 @@ export const addProduct = async (token, productData) => {
 };
 
 
-// ✅ Edit Product (Admin/Vendor)
 // ✅ Edit Product (Admin/Vendor)
 export const updateProduct = async (token, productId, productData) => {
   try {

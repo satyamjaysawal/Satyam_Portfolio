@@ -1,236 +1,246 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { addProduct } from "../api/api"; // Assuming this is the correct path to your addProduct function
-import { CheckCircle, XCircle } from "lucide-react"; // Import the icons
+import { addProduct } from "../api/api";
+import { useNavigate } from "react-router-dom";
+import { Package, AlertCircle, CheckCircle2, Image, DollarSign, Percent, Box, Tags, FileText } from "lucide-react";
 
 const ProductAdd = () => {
-  const { token } = useContext(AuthContext);  // Get token from AuthContext
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // State to manage form data
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    price: 0,
-    expenditure_cost_inr: 0,
-    discount_percentage: 0,
-    total_stock: 0,
+    price: "",
+    discount_percentage: "",
+    total_stock: "",
     category: "",
     image_url: "",
+    expenditure_cost_inr: "",
   });
 
-  // State to manage loading, success, and error
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
-  // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Reset error
-    setSuccessMessage(""); // Reset success message
+    setError(null);
+    setSuccess(false);
 
     try {
-      // Make API call to add product
       const response = await addProduct(token, formData);
-      // If the response has a success message, show it
-      if (response && response.message) {
-        setSuccessMessage(response.message);  // Assuming backend sends a success message
-      }
-      // Navigate to the product list page after successful addition
-      setTimeout(() => {
-        navigate("/products");
-      }, 2000); // Delay navigation to show the success message for 2 seconds
+      setSuccess(true);
+      navigate("/products");
     } catch (err) {
-      // Display error message from the backend
-      setError(err?.response?.data?.detail || "Something went wrong. Please try again.");
+      setError(err.message || "Failed to add product");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-semibold text-gray-900 mb-2">Add Product</h1>
-          <p className="text-lg text-gray-600">Fill in the details to add a new product.</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8">
+          <div className="flex items-center mb-6">
+            <Package className="h-8 w-8 text-blue-600 mr-3" />
+            <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
+          </div>
 
-        {/* Form Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-6">
-              {/* Product Name */}
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 rounded-md flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 p-4 bg-green-50 rounded-md flex items-center">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
+              <p className="text-green-700">Product added successfully!</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
                   Product Name
                 </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
+                <div className="relative">
+                  <Package className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
               </div>
 
-              {/* Product Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                  rows="4"
-                />
-              </div>
-
-              {/* Price */}
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                  Price (INR)
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Expenditure Cost */}
-              <div>
-                <label htmlFor="expenditure_cost_inr" className="block text-sm font-medium text-gray-700">
-                  Expenditure Cost (INR)
-                </label>
-                <input
-                  type="number"
-                  id="expenditure_cost_inr"
-                  name="expenditure_cost_inr"
-                  value={formData.expenditure_cost_inr}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Discount Percentage */}
-              <div>
-                <label htmlFor="discount_percentage" className="block text-sm font-medium text-gray-700">
-                  Discount Percentage
-                </label>
-                <input
-                  type="number"
-                  id="discount_percentage"
-                  name="discount_percentage"
-                  value={formData.discount_percentage}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  max="100"
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Total Stock */}
-              <div>
-                <label htmlFor="total_stock" className="block text-sm font-medium text-gray-700">
-                  Total Stock
-                </label>
-                <input
-                  type="number"
-                  id="total_stock"
-                  name="total_stock"
-                  value={formData.total_stock}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Category */}
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="category">
                   Category
                 </label>
-                <input
-                  type="text"
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
+                <div className="relative">
+                  <Tags className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
               </div>
 
-              {/* Image URL */}
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
+                  Description
+                </label>
+                <div className="relative">
+                  <FileText className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    required
+                    rows="4"
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  ></textarea>
+                </div>
+              </div>
+
               <div>
-                <label htmlFor="image_url" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
+                  Price
+                </label>
+                <div className="relative">
+                  <DollarSign className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="discount_percentage">
+                  Discount Percentage
+                </label>
+                <div className="relative">
+                  <Percent className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="number"
+                    id="discount_percentage"
+                    name="discount_percentage"
+                    value={formData.discount_percentage}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    max="100"
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="total_stock">
+                  Total Stock
+                </label>
+                <div className="relative">
+                  <Box className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="number"
+                    id="total_stock"
+                    name="total_stock"
+                    value={formData.total_stock}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="expenditure_cost_inr">
+                  Expenditure Cost (INR)
+                </label>
+                <div className="relative">
+                  <DollarSign className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="number"
+                    id="expenditure_cost_inr"
+                    name="expenditure_cost_inr"
+                    value={formData.expenditure_cost_inr}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="image_url">
                   Image URL
                 </label>
-                <input
-                  type="text"
-                  id="image_url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  required
-                  className="mt-2 w-full p-3 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Error and Success Messages */}
-              {error && (
-                <div className="flex items-center text-red-500 text-sm">
-                  <XCircle className="w-5 h-5 mr-2" />
-                  <p>{error}</p>
+                <div className="relative">
+                  <Image className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <input
+                    type="url"
+                    id="image_url"
+                    name="image_url"
+                    value={formData.image_url}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
                 </div>
-              )}
-              {successMessage && (
-                <div className="flex items-center text-green-500 text-sm">
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                  <p>{successMessage}</p>
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`px-6 py-3 bg-blue-600 text-white rounded-lg ${
-                    loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
-                  }`}
-                >
-                  {loading ? "Adding..." : "Add Product"}
-                </button>
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Adding Product...
+                  </>
+                ) : (
+                  "Add Product"
+                )}
+              </button>
             </div>
           </form>
         </div>

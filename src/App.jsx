@@ -21,6 +21,7 @@ import AllOrders from "./components/AllOrders";
 import ManageShipments from "./components/ManageShipments";
 import SaleAnalytics from "./components/SaleAnalytics";
 import SaleAnalyticsCharts from "./components/SaleAnalyticsCharts";
+import AdminProductAnalysis from './components/AdminProductAnalysis';
 // import Review from "./components/Review";
 // import Sale from "./components/Sale";
 import UserManualChatbot from "./components/UserManualChatbot";
@@ -65,6 +66,8 @@ function App() {
                 <Route path="/shipments" element={<ManageShipments />} />  
                 <Route path="/sale-analytics" element={<SaleAnalytics/>} /> 
                 <Route path="/sale-analytics-chart" element={<SaleAnalyticsCharts/>} />
+                {/* 🛠️ Admin-only Routes */}
+                <Route path="/admin-analysis" element={<AdminProductAnalysis />} /> 
               </Route>
 
               {/* 404 Page */}
@@ -73,7 +76,7 @@ function App() {
 
           </main>
           <Footer />
-          <UserManualChatbot />
+          {/* <UserManualChatbot /> */}
           <Chatbot  />
           
         </div>

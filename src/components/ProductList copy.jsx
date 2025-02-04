@@ -106,15 +106,15 @@ const ProductList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-800 to-blue-900 text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-semibold text-gray-900 mb-2">Our Products</h1>
-          <p className="text-lg text-gray-600">Explore our curated selection of products.</p>
+          <h1 className="text-4xl font-semibold text-gray-100 mb-2">Our Products</h1>
+          <p className="text-lg text-gray-300">Explore our curated selection of products.</p>
         </div>
 
         {(user?.role === "admin" || user?.role === "vendor") && (
-          <div className="bg-white rounded-xl shadow-lg p-4 mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 mb-8 bg-opacity-25 backdrop-blur-md">
             <div className="flex gap-4">
               <button
                 onClick={() => navigate("/add-product")}
@@ -136,14 +136,14 @@ const ProductList = () => {
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow-lg p-4 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-4 mb-8 bg-opacity-25 backdrop-blur-md">
           <div className="flex gap-6 items-center">
             <div className="flex gap-4 items-center">
-              <label className="text-sm font-medium text-gray-700">Category:</label>
+              <label className="text-sm font-medium text-gray-300">Category:</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-indigo-600 text-white border border-indigo-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {categories.map((category) => (
                   <option key={category} value={category}>
@@ -153,11 +153,11 @@ const ProductList = () => {
               </select>
             </div>
             <div className="flex gap-4 items-center">
-              <label className="text-sm font-medium text-gray-700">Sort by:</label>
+              <label className="text-sm font-medium text-gray-300">Sort by:</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-indigo-600 text-white border border-indigo-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="default">Default</option>
                 <option value="price-low">Price: Low to High</option>

@@ -88,6 +88,13 @@ const Dashboard = () => {
                 description="Track your sales performance and metrics with charts"
                 icon="📈"
                 color="hover:bg-green-50"
+              /> 
+              <DashboardCard
+                to="/admin-analysis"
+                title="Product Analtics"
+                description="Track your Product performance Review & Feedback with charts"
+                icon="📈"
+                color="hover:bg-green-50"
               />              
               <DashboardCard
                 to="/settings"
