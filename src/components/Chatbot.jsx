@@ -33,7 +33,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-40">
       {/* Chatbot Bubble */}
       {!isChatOpen && (
         <button 
@@ -70,8 +70,7 @@ const Chatbot = () => {
                     px-3 py-2 rounded-lg max-w-[70%] 
                     ${msg.sender === 'user' 
                       ? 'bg-indigo-500 text-white' 
-                      : 'bg-gray-200 text-black'}
-                  `}
+                      : 'bg-gray-200 text-black'}`}
                 >
                   {msg.text}
                 </div>

@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 const DashboardCard = ({ to, title, description, icon, color }) => (
-  <Link 
+  <Link
     to={to}
     className={`block p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ${color}`}
   >
@@ -38,14 +38,16 @@ const Dashboard = () => {
                 {getGreeting()}, {user?.username}! 👋
               </h1>
               <p className="text-gray-600">
-                Welcome to your {user?.role === "admin" ? "admin" : "vendor"} dashboard
+                Welcome to your {user?.role === "admin" ? "admin" : user?.role === "vendor" ? "vendor" : "customer"} dashboard
               </p>
             </div>
             <div className="hidden md:block">
               <div className={`px-4 py-2 rounded-full ${
                 user?.role === "admin" 
                   ? "bg-blue-100 text-blue-800" 
-                  : "bg-purple-100 text-purple-800"
+                  : user?.role === "vendor"
+                  ? "bg-purple-100 text-purple-800"
+                  : "bg-green-100 text-green-800"
               }`}>
                 {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)} Account
               </div>
@@ -74,13 +76,19 @@ const Dashboard = () => {
               />
               
               <DashboardCard
-                to="/analytics"
+                to="/sale-analytics"
                 title="Analytics"
                 description="View detailed statistics and performance metrics"
                 icon="📊"
                 color="hover:bg-green-50"
               />
-              
+              <DashboardCard
+                to="/sale-analytics-chart"
+                title="View Analytics Chart"
+                description="Track your sales performance and metrics with charts"
+                icon="📈"
+                color="hover:bg-green-50"
+              />              
               <DashboardCard
                 to="/settings"
                 title="Platform Settings"
@@ -110,18 +118,63 @@ const Dashboard = () => {
               />
               
               <DashboardCard
-                to="/vendor-analytics"
+                to="/sale-analytics"
                 title="Sales Analytics"
                 description="Track your sales performance and metrics"
-                icon="📈"
+                icon="📊"
                 color="hover:bg-green-50"
               />
               
+              <DashboardCard
+                to="/sale-analytics-chart"
+                title="View Analytics Chart"
+                description="Track your sales performance and metrics with charts"
+                icon="📈"
+                color="hover:bg-green-50"
+              />
+
               <DashboardCard
                 to="/vendor-profile"
                 title="Store Settings"
                 description="Manage your store profile and preferences"
                 icon="🏪"
+                color="hover:bg-yellow-50"
+              />
+            </>
+          )}
+
+          {/* Customer Dashboard */}
+          {user?.role === "customer" && (
+            <>
+              <DashboardCard
+                to="/products"
+                title="Browse Products"
+                description="Explore and purchase products from various categories"
+                icon="🛒"
+                color="hover:bg-teal-50"
+              />
+              
+              <DashboardCard
+                to="/orders"
+                title="Your Orders"
+                description="View your order history and track order status"
+                icon="📦"
+                color="hover:bg-blue-50"
+              />
+              
+              <DashboardCard
+                to="/wishlist"
+                title="Wishlist"
+                description="View and manage your saved items"
+                icon="❤️"
+                color="hover:bg-red-50"
+              />
+              
+              <DashboardCard
+                to="/account-settings"
+                title="Account Settings"
+                description="Update your personal information and preferences"
+                icon="⚙️"
                 color="hover:bg-yellow-50"
               />
             </>
@@ -134,19 +187,19 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-600">Total Orders</p>
-              <p className="text-2xl font-bold text-blue-800">150</p>
+              {/* <p className="text-2xl font-bold text-blue-800">150</p> */}
             </div>
             <div className="p-4 bg-green-50 rounded-lg">
               <p className="text-sm text-green-600">Revenue</p>
-              <p className="text-2xl font-bold text-green-800">₹45,250</p>
+              {/* <p className="text-2xl font-bold text-green-800">₹45,250</p> */}
             </div>
             <div className="p-4 bg-purple-50 rounded-lg">
               <p className="text-sm text-purple-600">Active Users</p>
-              <p className="text-2xl font-bold text-purple-800">1,234</p>
+              {/* <p className="text-2xl font-bold text-purple-800">1,234</p> */}
             </div>
             <div className="p-4 bg-yellow-50 rounded-lg">
               <p className="text-sm text-yellow-600">Products</p>
-              <p className="text-2xl font-bold text-yellow-800">89</p>
+              {/* <p className="text-2xl font-bold text-yellow-800">89</p> */}
             </div>
           </div>
         </div>

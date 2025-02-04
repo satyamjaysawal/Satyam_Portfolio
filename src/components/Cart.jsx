@@ -1,7 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getCart, removeFromCart, placeOrder, addToWishlist } from '../api/api';
-import { Trash2, Heart, ShoppingBag, AlertCircle, Package, ArrowRight, Loader2 } from 'lucide-react';
+import { 
+  Trash2, 
+  Heart, 
+  ShoppingBag, 
+  AlertCircle, 
+  Package, 
+  ArrowRight, 
+  Loader2, 
+  CheckCircle,
+  XCircle 
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
@@ -75,14 +85,18 @@ const Cart = () => {
   };
 
   const LoadingSkeleton = () => (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
-          <div className="flex gap-4">
-            <div className="w-24 h-24 bg-gray-200 rounded-lg" />
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-3/4" />
-              <div className="h-4 bg-gray-200 rounded w-1/2" />
+        <div 
+          key={i} 
+          className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-5 animate-pulse"
+        >
+          <div className="flex items-center space-x-6">
+            <div className="w-28 h-28 bg-gray-300/20 rounded-xl" />
+            <div className="flex-1 space-y-4">
+              <div className="h-5 bg-gray-300/20 rounded w-3/4" />
+              <div className="h-4 bg-gray-300/20 rounded w-1/2" />
+              <div className="h-4 bg-gray-300/20 rounded w-1/3" />
             </div>
           </div>
         </div>
@@ -91,136 +105,151 @@ const Cart = () => {
   );
 
   const EmptyCart = () => (
-    <div className="text-center py-12">
-      <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-      <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-      <p className="text-gray-600 mb-6">Add items to your cart to get started</p>
+    <div className="text-center py-16 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10">
+      <Package className="w-24 h-24 text-blue-400/50 mx-auto mb-6" />
+      <h3 className="text-2xl font-bold text-white mb-4">Your Cart is Empty</h3>
+      <p className="text-gray-400 mb-8 px-4">
+        Explore our products and add some amazing items to your cart!
+      </p>
       <button
         onClick={() => navigate('/products')}
-        className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg 
-          hover:bg-blue-700 transition-colors duration-200"
+        className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white 
+        rounded-full hover:scale-105 transition-all duration-300 flex items-center mx-auto"
       >
         Continue Shopping
-        <ArrowRight className="ml-2 w-4 h-4" />
+        <ArrowRight className="ml-2 w-5 h-5" />
       </button>
     </div>
   );
 
   if (loading) return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Cart</h1>
-      <LoadingSkeleton />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-10">
+          Your Cart
+        </h1>
+        <LoadingSkeleton />
+      </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-3 mb-8">
-          <ShoppingBag className="w-8 h-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Your Cart</h1>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="flex items-center gap-4 mb-10">
+          <ShoppingBag className="w-10 h-10 text-blue-500" />
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+            Your Cart
+          </h1>
+        </header>
 
+        {/* Notifications */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200 flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <p className="text-red-600">{error}</p>
+          <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-center space-x-4">
+            <XCircle className="w-7 h-7 text-red-500" />
+            <span className="text-red-300">{error}</span>
           </div>
         )}
 
         {orderSuccess && (
-          <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-            <p className="text-green-600 font-medium flex items-center gap-2">
-              🎉 Order placed successfully! Redirecting to orders...
-            </p>
+          <div className="mb-6 bg-green-500/10 border border-green-500/20 rounded-2xl p-4 flex items-center space-x-4">
+            <CheckCircle className="w-7 h-7 text-green-500" />
+            <span className="text-green-300">Order placed successfully! Redirecting...</span>
           </div>
         )}
 
         {wishlistError && (
-          <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200 flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <p className="text-red-600">{wishlistError}</p>
+          <div className="mb-6 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 flex items-center space-x-4">
+            <AlertCircle className="w-7 h-7 text-yellow-500" />
+            <span className="text-yellow-300">{wishlistError}</span>
           </div>
         )}
 
         {wishlistSuccess && (
-          <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-            <p className="text-green-600 font-medium flex items-center gap-2">
-              🎉 {wishlistSuccess}
-            </p>
+          <div className="mb-6 bg-green-500/10 border border-green-500/20 rounded-2xl p-4 flex items-center space-x-4">
+            <CheckCircle className="w-7 h-7 text-green-500" />
+            <span className="text-green-300">{wishlistSuccess}</span>
           </div>
         )}
 
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="md:col-span-2 space-y-6">
               {cartItems.map((item) => (
                 <div 
                   key={item.product.id} 
-                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden 
+                  transition-all duration-300 hover:border-blue-500/30 hover:shadow-2xl"
                 >
-                  <div className="p-4">
-                    <div className="flex gap-4">
-                      <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                        <img 
-                          src={item.product.image_url} 
-                          alt={item.product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                            <p className="text-sm text-gray-600 mt-1">Quantity: {item.quantity}</p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleAddToWishlist(item.product.id)}
-                              className="p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded-full 
-                                transition-colors duration-200"
-                              title="Add to wishlist"
-                            >
-                              <Heart className="w-5 h-5" />
-                            </button>
-                            <button
-                              onClick={() => handleRemoveFromCart(item.product.id)}
-                              className="p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded-full 
-                                transition-colors duration-200"
-                              title="Remove from cart"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
+                  <div className="p-6 flex items-center space-x-6">
+                    {/* Product Image */}
+                    <div className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 
+                    shadow-lg border border-white/10">
+                      <img 
+                        src={item.product.image_url} 
+                        alt={item.product.name}
+                        className="w-full h-full object-cover transform hover:scale-110 transition-transform"
+                      />
+                    </div>
+                    
+                    {/* Product Details */}
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">{item.product.name}</h3>
+                          <p className="text-sm text-gray-400 mt-1">Quantity: {item.quantity}</p>
                         </div>
                         
-                        <div className="mt-4 flex justify-between items-end">
-                          <div>
-                            <p className="text-lg font-semibold text-gray-900">
-                              ₹{(item.product.price_after_discount * item.quantity).toFixed(2)}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              ₹{item.product.price_after_discount} each
-                            </p>
-                          </div>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <span 
-                                key={i}
-                                className={`text-sm ${
-                                  i < Math.floor(item.product.product_rating)
-                                    ? 'text-yellow-400'
-                                    : 'text-gray-300'
-                                }`}
-                              >
-                                ★
-                              </span>
-                            ))}
-                          </div>
+                        {/* Action Buttons */}
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleAddToWishlist(item.product.id)}
+                            className="p-2 bg-white/5 rounded-full hover:bg-white/10 
+                            text-gray-300 hover:text-red-500 transition-all"
+                            title="Add to wishlist"
+                          >
+                            <Heart className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleRemoveFromCart(item.product.id)}
+                            className="p-2 bg-white/5 rounded-full hover:bg-white/10 
+                            text-gray-300 hover:text-red-500 transition-all"
+                            title="Remove from cart"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Price and Rating */}
+                      <div className="mt-4 flex justify-between items-end">
+                        <div>
+                          <p className="text-xl font-bold text-blue-400">
+                            ₹{(item.product.price_after_discount * item.quantity).toFixed(2)}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            ₹{item.product.price_after_discount} each
+                          </p>
+                        </div>
+                        
+                        {/* Star Rating */}
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <span 
+                              key={i}
+                              className={`text-lg ${
+                                i < Math.floor(item.product.product_rating)
+                                  ? 'text-yellow-400'
+                                  : 'text-gray-600'
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -230,23 +259,24 @@ const Cart = () => {
             </div>
 
             {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+            <div className="md:col-span-1">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 
+              sticky top-8 transition-all duration-300 hover:border-blue-500/30 hover:shadow-2xl">
+                <h2 className="text-2xl font-bold text-white mb-6">Order Summary</h2>
                 
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-gray-600">
+                <div className="space-y-4 mb-8">
+                  <div className="flex justify-between text-gray-400">
                     <span>Subtotal ({cartItems.length} items)</span>
                     <span>₹{totalAmount.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-gray-400">
                     <span>Shipping</span>
-                    <span className="text-green-600">Free</span>
+                    <span className="text-green-400">Free</span>
                   </div>
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between text-lg font-semibold text-gray-900">
+                  <div className="border-t border-white/10 pt-4">
+                    <div className="flex justify-between text-xl font-bold text-white">
                       <span>Total</span>
-                      <span>₹{totalAmount.toFixed(2)}</span>
+                      <span className="text-blue-400">₹{totalAmount.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -254,21 +284,21 @@ const Cart = () => {
                 <button
                   onClick={handlePlaceOrder}
                   disabled={processingOrder}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium
-                    hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                    transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 
+                  text-white rounded-full hover:opacity-90 transition-all duration-300 
+                  flex items-center justify-center space-x-2 disabled:opacity-50"
                 >
                   {processingOrder ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Processing...
-                    </span>
+                    <>
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      <span>Processing...</span>
+                    </>
                   ) : (
                     'Place Order'
                   )}
                 </button>
 
-                <p className="text-sm text-gray-500 mt-4 text-center">
+                <p className="text-sm text-gray-500 text-center mt-4">
                   Free shipping on all orders
                 </p>
               </div>

@@ -19,40 +19,24 @@ const Login = () => {
   const [timerActive, setTimerActive] = useState(true);
 
   useEffect(() => {
-    // Check if the timer start time is already stored in localStorage
-    const startTime = localStorage.getItem("serverStartTime");
-
-    if (!startTime) {
-      // If no start time exists, set it for the first time
-      const currentStartTime = Date.now();
-      localStorage.setItem("serverStartTime", currentStartTime.toString());
-    }
-
-    // Calculate remaining time on page load based on the server start time
-    const calculateRemainingTime = () => {
-      const startTime = parseInt(localStorage.getItem("serverStartTime"), 10);
-      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-      const remainingTime = 90 - elapsedTime;
-
-      if (remainingTime <= 0) {
-        setTimer(0);
-        setTimerActive(false);
-      } else {
-        setTimer(remainingTime);
-        setTimerActive(true);
-      }
-    };
+    // Start the timer from 90 seconds when the page loads
+    setTimer(90);
 
     // Recalculate the remaining time every second if the timer is active
     if (timerActive) {
       const interval = setInterval(() => {
-        calculateRemainingTime();
+        setTimer((prevTimer) => {
+          if (prevTimer <= 0) {
+            setTimerActive(false);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
       }, 1000);
 
       return () => clearInterval(interval); // Cleanup on component unmount
     }
-
-  }, [timerActive]);
+  }, [timerActive]); // The effect runs when the component is mounted and whenever the timerActive state changes.
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });

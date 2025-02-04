@@ -1,28 +1,158 @@
 import axios from "axios";
 
 // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
-// const API_BASE_URL = "http://127.0.0.1:8000";
+// const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 const getAuthHeaders = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
+// ========================= 🌟 REVIEWS =========================
+// ========================= 🌟 REVIEWS =========================
 
-
-
-// API function for submitting a review
-export const submitReview = async (token, productId, rating, comment) => {
+// Function to fetch reviews for a product
+// api.js
+// export const getProductReviews = async (productId, token) => {
+//   try {
+//     const response = await axios.get(
+//       `${API_BASE_URL}/products/${productId}/reviews`,  // Ensure this is correct
+//       getAuthHeaders(token)
+//     );
+//     return response.data; // Return the reviews and weighted average rating
+//   } catch (error) {
+//     console.error("Error fetching product reviews:", error); // Error handling
+//     throw error; // Throw error for further handling in component
+//   }
+// };
+export const getProductReviews = async (productId, token) => {
+  console.log(`Fetching reviews for product ID: ${productId}`); // Log the productId being fetched
+  
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/reviews`,
-      { product_id: productId, rating, comment },
+    // Start request
+    console.log(`Sending request to API: ${API_BASE_URL}/products/${productId}/reviews`);
+    
+    const response = await axios.get(
+      `${API_BASE_URL}/products/${productId}/reviews`,  // Ensure this is correct
       getAuthHeaders(token)
     );
+
+    // Log the full response
+    console.log("Response received from API:");
+    console.log(response); // Entire response object from the server
+
+    // Log the response data specifically
+    console.log("Response Data:");
+    console.log(response.data); // This is where the reviews and weighted average rating should be
+
+    // Return the reviews and weighted average rating
     return response.data;
+
   } catch (error) {
-    throw error.response?.data || "Review submission failed.";
+    // Log the error if there's any issue with the request
+    console.error("Error fetching product reviews:", error);
+
+    if (error.response) {
+      // Log the error response from the server (status code, etc.)
+      console.error("Error Response from API:");
+      console.error(error.response);
+      console.error("Error Response Data:");
+      console.error(error.response.data);
+      console.error("Error Response Status:");
+      console.error(error.response.status);
+    }
+
+    if (error.request) {
+      // Log the request if no response was received
+      console.error("Error Request Sent to API:");
+      console.error(error.request);
+    }
+
+    // Throw error to handle it further in the component
+    throw error;
   }
 };
+
+
+// Function to submit a new review for a product
+export const addProductReview = async (productId, rating, comment, token) => {
+  try {
+    const reviewData = {
+      rating,
+      comment,
+    };
+    const response = await axios.post(
+      `${API_BASE_URL}/products/${productId}/reviews`,
+      reviewData,
+      getAuthHeaders(token)
+    );
+    console.log("Review Submitted Response:", response.data); // Debugging log for the response
+    return response.data; // Return the created review data
+  } catch (error) {
+    console.error("Error submitting product review:", error); // Error handling
+    throw error; // Throw error for further handling in component
+  }
+};
+// ========================== Sales Analytics ============================
+export const getTotalRevenue = async (token) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/sales/total-revenue`, getAuthHeaders(token));
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || "Failed to fetch total revenue";
+  }
+};
+// API function to fetch daily sales trend data
+export const getDailySalesTrend = async (startDate, endDate, token) => {
+  try {
+    // Send GET request to the endpoint with start and end date as query parameters
+    const response = await axios.get(`${API_BASE_URL}/sales/daily-sales-trend`, {
+      params: { start_date: startDate, end_date: endDate }, // Add query parameters to URL
+      ...getAuthHeaders(token), // Add Authorization header
+    });
+
+    return response.data; // Return the data received from the API
+  } catch (error) {
+    // Log the error for debugging
+    console.error("Error fetching daily sales trend:", error);
+
+    // If the API responds with an error, throw the error response
+    if (error.response) {
+      throw new Error(error.response.data.detail || "Failed to fetch daily sales trend");
+    }
+
+    // Otherwise, throw a generic error message
+    throw new Error("An unknown error occurred while fetching sales data.");
+  }
+};
+
+export const getMonthlyRevenue = async (year, token) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/sales/monthly-revenue?year=${year}`, getAuthHeaders(token));
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || "Failed to fetch monthly revenue";
+  }
+};
+
+export const getBestPerformingProducts = async (token) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/sales/best-products`, getAuthHeaders(token));
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || "Failed to fetch best-performing products";
+  }
+};
+
+export const getPopularProducts = async (token) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/sales/popular-products`, getAuthHeaders(token));
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || "Failed to fetch popular products";
+  }
+};
+
+
 
 // ========================= 👤 AUTHENTICATION =========================
 // ✅ Login
