@@ -3,7 +3,12 @@
 `https://ecommerce-website-reactjs-vite-frontend.onrender.com`
 
 
+
+
 ![image](https://github.com/user-attachments/assets/eb668367-0843-465d-8472-05224d53e9a8)
+
+
+![image](https://github.com/user-attachments/assets/d6fc6ffe-34c3-415f-aec3-75043a45a246)
 
 
 
