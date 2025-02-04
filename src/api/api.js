@@ -1,29 +1,14 @@
 import axios from "axios";
 
 // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-// const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://ecommerce-website-flask-backend.onrender.com";
+// const API_BASE_URL = "http://127.0.0.1:8000";
 
 const getAuthHeaders = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
 // ========================= 🌟 REVIEWS =========================
-// ========================= 🌟 REVIEWS =========================
 
-// Function to fetch reviews for a product
-// api.js
-// export const getProductReviews = async (productId, token) => {
-//   try {
-//     const response = await axios.get(
-//       `${API_BASE_URL}/products/${productId}/reviews`,  // Ensure this is correct
-//       getAuthHeaders(token)
-//     );
-//     return response.data; // Return the reviews and weighted average rating
-//   } catch (error) {
-//     console.error("Error fetching product reviews:", error); // Error handling
-//     throw error; // Throw error for further handling in component
-//   }
-// };
 export const getProductReviews = async (productId, token) => {
   console.log(`Fetching reviews for product ID: ${productId}`); // Log the productId being fetched
   
@@ -575,7 +560,7 @@ export const deleteOrder = async (orderId, token) => {
 export const processPayment = async (token, orderId) => {
   try {
     const response = await axios.post(
-      `http://127.0.0.1:8000/payment/orders/${orderId}/pay`,
+      `${API_BASE_URL}/payment/orders/${orderId}/pay`,  // Using API_BASE_URL here
       {},
       {
         headers: {
@@ -592,6 +577,7 @@ export const processPayment = async (token, orderId) => {
     throw new Error('An unknown error occurred during payment.');
   }
 };
+
 // ========================= 📦 SHIPMENT and  📦 ALL ORDERS =========================
 export const getAllOrders = async (token) => {
   try {
