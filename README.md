@@ -3,6 +3,10 @@
 
 Welcome to the E-Commerce Project repository! This project is designed to be a fully functional e-commerce platform with role-based authentication and a variety of features for customers, vendors, and admins.
 
+## Deployment
+
+The frontend of the project has been deployed and is accessible through the following URL:
+[**E-Commerce Website**](https://ecommerce-website-reactjs-vite-frontend.onrender.com)
 
 ## Overview
 
