@@ -7,15 +7,6 @@
 
 Welcome to the E-Commerce Project repository! This project is designed to be a fully functional e-commerce platform with role-based authentication and a variety of features for customers, vendors, and admins.
 
-## Table of Contents
-- [Overview](#overview)
-- [Technologies Used](#technologies-used)
-- [Features](#features)
-- [Installation](#installation)
-- [API Documentation](#api-documentation)
-- [Frontend Guide](#frontend-guide)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Overview
 
