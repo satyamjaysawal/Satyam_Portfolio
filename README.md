@@ -3,7 +3,8 @@
 `https://ecommerce-website-reactjs-vite-frontend.onrender.com`
 
 
-![image](https://github.com/user-attachments/assets/74a3cbee-b49f-49f1-8274-4347ec1130a1)
+![image](https://github.com/user-attachments/assets/eb668367-0843-465d-8472-05224d53e9a8)
+
 
 
 # E-Commerce Project - React + Vite + FastAPI + Neon DB (SQL) + Swagger UI + 
