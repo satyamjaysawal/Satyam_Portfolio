@@ -1,7 +1,3 @@
-# React + Vite
-
-
-
 
 # E-Commerce Project - React + Vite + FastAPI + Neon DB (SQL) + Swagger UI + 
 
