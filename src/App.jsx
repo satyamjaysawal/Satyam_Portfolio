@@ -21,66 +21,75 @@ import AllOrders from "./components/AllOrders";
 import ManageShipments from "./components/ManageShipments";
 import SaleAnalytics from "./components/SaleAnalytics";
 import SaleAnalyticsCharts from "./components/SaleAnalyticsCharts";
-import AdminProductAnalysis from './components/AdminProductAnalysis';
 // import Review from "./components/Review";
 // import Sale from "./components/Sale";
 import UserManualChatbot from "./components/UserManualChatbot";
 import Chatbot from './components/Chatbot';
 import NotFound from "./pages/NotFound";
+import { RetryTimerProvider } from "./context/RetryTimerContext";
+import RetryTimerOverlay from "./components/RetryTimerOverlay";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen">
-          {/* Fixed Navbar */}
-          <Navbar />
-          
-          <main className="flex-grow mt-[60px]"> {/* Add margin to push content below Navbar */}
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+      <RetryTimerProvider>
 
-              {/* 🛍️ Public Routes (Anyone Can Access) */}
-              <Route path="/products" element={<ProductList />} />
-              <Route path="/products/:productId" element={<ProductDetails />} />
-              {/* <Route path="/search" element={<ProductSearch />} /> */}
+        <Router>
+          <div className="flex flex-col min-h-screen">
 
-              {/* 🔒 Protected Routes (Only Authenticated Users) */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/add-product" element={<ProductAdd />} />
-                <Route path="/update-product/:productId" element={<ProductEdit />} />
+            <RetryTimerOverlay />
 
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/orders" element={<Order />} />
-                <Route path="/payment/:orderId" element={<Payment />} />
-                {/* <Route path="/review" element={<Review />} /> */}
-                {/* <Route path="/sales" element={<Sale />} /> */}
+            <Navbar />
+
+            <main className="flex-grow mt-[60px]"> {/* Add margin to push content below Navbar */}
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/* 🛍️ Public Routes (Anyone Can Access) */}
+                <Route path="/products" element={<ProductList />} />
+                <Route path="/products/:productId" element={<ProductDetails />} />
+                {/* <Route path="/search" element={<ProductSearch />} /> */}
+
+                {/* 🔒 Protected Routes (Only Authenticated Users) */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/add-product" element={<ProductAdd />} />
+                  <Route path="/update-product/:productId" element={<ProductEdit />} />
+
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/orders" element={<Order />} />
+                  <Route path="/payment/:orderId" element={<Payment />} />
+                  {/* <Route path="/review" element={<Review />} /> */}
+                  {/* <Route path="/sales" element={<Sale />} /> */}
 
 
-                <Route path="/orders-all" element={<AllOrders />} />
-                <Route path="/shipments" element={<ManageShipments />} />  
-                <Route path="/sale-analytics" element={<SaleAnalytics/>} /> 
-                <Route path="/sale-analytics-chart" element={<SaleAnalyticsCharts/>} />
-                {/* 🛠️ Admin-only Routes */}
-                <Route path="/admin-analysis" element={<AdminProductAnalysis />} /> 
-              </Route>
+                  <Route path="/orders-all" element={<AllOrders />} />
+                  <Route path="/shipments" element={<ManageShipments />} />
+                  <Route path="/sale-analytics" element={<SaleAnalytics />} />
+                  <Route path="/sale-analytics-chart" element={<SaleAnalyticsCharts />} />
+                </Route>
 
-              {/* 404 Page */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* 404 Page */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
 
-          </main>
-          <Footer />
-          {/* <UserManualChatbot /> */}
-          <Chatbot  />
-          
-        </div>
-      </Router>
+            </main>
+            <Footer />
+            <UserManualChatbot />
+            <Chatbot />
+
+          </div>
+        </Router>
+
+
+
+
+      </RetryTimerProvider>
+
     </AuthProvider>
   );
 }

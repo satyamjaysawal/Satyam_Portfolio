@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { login } from "../api/api";
-import { Shield, Loader2, Eye, EyeOff, Clock } from "lucide-react";
+import { Shield, Loader2, Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const { login: authLogin } = useContext(AuthContext);
@@ -13,30 +13,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  // State for countdown timer
-  const [timer, setTimer] = useState(90); // 1:30 in seconds
-  const [timerActive, setTimerActive] = useState(true);
-
-  useEffect(() => {
-    // Start the timer from 90 seconds when the page loads
-    setTimer(90);
-
-    // Recalculate the remaining time every second if the timer is active
-    if (timerActive) {
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 0) {
-            setTimerActive(false);
-            return 0;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval); // Cleanup on component unmount
-    }
-  }, [timerActive]); // The effect runs when the component is mounted and whenever the timerActive state changes.
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -68,51 +44,10 @@ const Login = () => {
     }
   };
 
-  // Convert seconds to minutes and seconds format
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  // Render timer with enhanced styling
-  const renderTimer = () => {
-    const progress = ((90 - timer) / 90) * 100;
-    return (
-      <div className="relative w-full bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 overflow-hidden">
-        {/* Animated progress bar */}
-        <div 
-          className="absolute left-0 top-0 h-full bg-yellow-500/30 transition-all duration-500 ease-linear" 
-          style={{ width: `${progress}%` }}
-        />
-        
-        {/* Timer content */}
-        <div className="relative z-10 flex items-center space-x-3">
-          <Clock className="w-5 h-5 text-yellow-300 animate-pulse" />
-          <div className="flex-grow">
-            <p className="text-yellow-200 text-xs font-medium">
-              Server Startup in Progress
-            </p>
-            <p className="text-yellow-100 text-sm font-bold">
-              {formatTime(timer)}
-            </p>
-          </div>
-          <div className="text-xs text-yellow-300 opacity-70">
-            Please wait
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-indigo-900 via-purple-900 to-purple-800">
       <div className="flex-grow flex items-center justify-center px-4 mt-16">
         <div className="w-full max-w-lg p-6 space-y-4 bg-white/10 backdrop-blur-xl rounded-lg border border-white/20 shadow-lg">
-          
-          {/* Enhanced Timer Component */}
-          {timerActive && renderTimer()}
-
           {/* Logo & Header */}
           <div className="text-center space-y-1">
             <div className="flex justify-center">
