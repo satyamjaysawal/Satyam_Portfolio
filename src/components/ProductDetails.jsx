@@ -418,7 +418,7 @@ const ProductDetails = () => {
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">Admin / Vendor Actions</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <button
-                        onClick={() => navigate(`/edit-product/${product.id}`)}
+                        onClick={() => navigate(`/update-product/:productId`)}
                         className="flex items-center justify-center space-x-2 bg-blue-500 text-white 
                           p-4 rounded-xl hover:bg-blue-600 transform hover:-translate-y-0.5 
                           transition-all duration-150 focus:ring-2 focus:ring-blue-500 
