@@ -79,7 +79,7 @@ function App() {
 
             </main>
             <Footer />
-            <UserManualChatbot />
+            {/* <UserManualChatbot /> */}
             <Chatbot />
 
           </div>
