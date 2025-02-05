@@ -46,6 +46,8 @@ const Login = () => {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-indigo-900 via-purple-900 to-purple-800">
+
+
       <div className="flex-grow flex items-center justify-center px-4 mt-16">
         <div className="w-full max-w-lg p-6 space-y-4 bg-white/10 backdrop-blur-xl rounded-lg border border-white/20 shadow-lg">
           {/* Logo & Header */}
@@ -54,6 +56,9 @@ const Login = () => {
               <div className="p-2 bg-indigo-600 rounded-xl inline-flex items-center justify-center">
                 <Shield className="w-6 h-6 text-white" />
               </div>
+            </div>
+            <div className="bg-indigo-800 text-white text-center py-2 text-xs">
+              <p>Please note, we are using a render app server that may take up to 60 seconds to respond.</p>
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
               Welcome Back
@@ -71,8 +76,8 @@ const Login = () => {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label 
-                className="text-xs font-medium text-gray-200 cursor-pointer" 
+              <label
+                className="text-xs font-medium text-gray-200 cursor-pointer"
                 htmlFor="username"
               >
                 Username
@@ -91,8 +96,8 @@ const Login = () => {
             </div>
 
             <div>
-              <label 
-                className="text-xs font-medium text-gray-200 cursor-pointer" 
+              <label
+                className="text-xs font-medium text-gray-200 cursor-pointer"
                 htmlFor="password"
               >
                 Password
@@ -185,3 +190,4 @@ const Login = () => {
 };
 
 export default Login;
+
