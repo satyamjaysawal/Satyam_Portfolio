@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getProducts, getProductById } from "../api/api";
-import { ShoppingBag, Star, Package, AlertCircle, Plus, RefreshCcw, Upload, Search } from "lucide-react";
+import { ShoppingBag, Star, Package, AlertCircle, Plus, RefreshCcw, Upload } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
-import { debounce } from "lodash";
 
 const ProductList = () => {
   const { user } = useContext(AuthContext);
@@ -17,7 +16,6 @@ const ProductList = () => {
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Existing callback functions remain the same
   const handleImageError = useCallback((productId) => {
     setImageErrors((prev) => ({ ...prev, [productId]: true }));
   }, []);
@@ -54,11 +52,6 @@ const ProductList = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const query = queryParams.get("search") || "";
-    // Auto reset when query is empty/blank
-    if (!query.trim()) {
-      setSelectedCategory("all");
-      setSortBy("default");
-    }
     setSearchQuery(query);
   }, [location.search]);
 
@@ -145,7 +138,7 @@ const ProductList = () => {
           <div className="flex flex-wrap gap-6 items-center justify-between">
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-gray-200">Category:</label>
+                <label className="text-sm font-medium text-gray-300">Category:</label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -159,7 +152,7 @@ const ProductList = () => {
                 </select>
               </div>
               <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-gray-200">Sort by:</label>
+                <label className="text-sm font-medium text-gray-300">Sort by:</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -179,9 +172,9 @@ const ProductList = () => {
         {loading ? (
           <LoadingSkeleton />
         ) : error ? (
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 text-center">
-            <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <p className="text-red-400 text-xl mb-6">{error}</p>
+          <div className="text-center">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <p className="text-red-500 text-xl mb-6">{error}</p>
             <button
               onClick={fetchProducts}
               className="bg-red-500 text-white px-8 py-3 rounded-xl hover:bg-red-600 transition-all duration-300"
@@ -191,7 +184,7 @@ const ProductList = () => {
             </button>
           </div>
         ) : sortedProducts.length === 0 ? (
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 text-center">
+          <div className="text-center">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-300 text-xl">No products found.</p>
           </div>
