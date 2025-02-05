@@ -454,7 +454,7 @@ export const updateProduct = async (token, productId, productData) => {
 // ✅ Delete Product (Admin/Vendor)
 export const deleteProduct = async (token, productId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/product/products/${productId}`, getAuthHeaders(token));
+    const response = await axios.delete(`${API_BASE_URL}/product/products/${productId}/delete`, getAuthHeaders(token));
     return response.data;
   } catch (error) {
     throw error.response?.data || "Failed to delete product";
