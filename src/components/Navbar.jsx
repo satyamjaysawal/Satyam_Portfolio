@@ -185,7 +185,7 @@ const Navbar = () => {
           )}
 
           <a 
-            href="/"
+            // href="/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-1 bg-purple-500/80 hover:bg-purple-600 px-4 py-2 
