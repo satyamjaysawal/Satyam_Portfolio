@@ -115,7 +115,7 @@ const ProductList = () => {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => navigate("/add-product")}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300"
               >
                 <Plus className="w-5 h-5" />
                 Add Product
@@ -123,7 +123,7 @@ const ProductList = () => {
               {user?.role === "admin" && (
                 <button
                   onClick={() => navigate("/import-products")}
-                  className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-xl transition-all duration-300"
                 >
                   <Upload className="w-5 h-5" />
                   Import Products
@@ -177,7 +177,7 @@ const ProductList = () => {
             <p className="text-red-500 text-xl mb-6">{error}</p>
             <button
               onClick={fetchProducts}
-              className="bg-red-500 text-white px-8 py-3 rounded-xl hover:bg-red-600 transition-all duration-300"
+              className="bg-red-500 text-white px-8 py-3 rounded-xl transition-all duration-300"
             >
               <RefreshCcw className="w-5 h-5 inline mr-2" />
               Retry
@@ -193,7 +193,7 @@ const ProductList = () => {
             {sortedProducts.map((product) => (
               <div
                 key={product.id}
-                className="group bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl"
+                className="group bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl overflow-hidden"
               >
                 <div className="aspect-square relative overflow-hidden">
                   {imageErrors[product.id] ? (
@@ -202,7 +202,7 @@ const ProductList = () => {
                     <img
                       src={product.image_url}
                       alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500"
                       onError={() => handleImageError(product.id)}
                       loading="lazy"
                     />
@@ -248,14 +248,14 @@ const ProductList = () => {
                   <div className="flex gap-3">
                     <Link
                       to={`/products/${product.id}`}
-                      className="flex-1 text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300"
+                      className="flex-1 text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl"
                     >
                       View Details
                     </Link>
                     {(user?.role === "admin" || user?.role === "vendor") && (
                       <button
                         onClick={() => handleUpdateProduct(product.id)}
-                        className="px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+                        className="px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl"
                       >
                         <RefreshCcw className="w-5 h-5" />
                       </button>
