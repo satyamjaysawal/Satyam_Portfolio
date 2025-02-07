@@ -106,13 +106,13 @@ const ProductCard = React.memo(({ product, user, handleUpdateProduct, navigate, 
 ));
 
 // Filter Panel Component
-const FilterPanel = React.memo(({ 
-  priceRange, 
-  setPriceRange, 
-  maxPrice, 
-  selectedRating, 
-  setSelectedRating, 
-  resetFilters 
+const FilterPanel = React.memo(({
+  priceRange,
+  setPriceRange,
+  maxPrice,
+  selectedRating,
+  setSelectedRating,
+  resetFilters
 }) => (
   <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8 overflow-hidden animate-fade-in">
     <div className="p-6 space-y-8">
@@ -147,11 +147,10 @@ const FilterPanel = React.memo(({
             <button
               key={rating}
               onClick={() => setSelectedRating(rating)}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 ${
-                selectedRating === rating
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 ${selectedRating === rating
                   ? "bg-purple-500 text-white"
                   : "bg-white/5 text-gray-300 hover:bg-white/10"
-              }`}
+                }`}
             >
               {rating === 0 ? (
                 "All"
@@ -159,9 +158,8 @@ const FilterPanel = React.memo(({
                 <>
                   {rating}
                   <Star
-                    className={`w-4 h-4 ${
-                      selectedRating === rating ? "text-yellow-300 fill-current" : "text-yellow-300"
-                    }`}
+                    className={`w-4 h-4 ${selectedRating === rating ? "text-yellow-300 fill-current" : "text-yellow-300"
+                      }`}
                   />
                 </>
               )}
@@ -179,6 +177,39 @@ const FilterPanel = React.memo(({
     </div>
   </div>
 ));
+const Pagination = ({ currentPage, totalItems, itemsPerPage, setCurrentPage }) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  return (
+    <div className="flex justify-center gap-4 mt-8">
+      <button
+        onClick={handlePrevPage}
+        className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all duration-300"
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+
+      <span className="text-white">{`Page ${currentPage} of ${totalPages}`}</span>
+
+      <button
+        onClick={handleNextPage}
+        className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all duration-300"
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  );
+};
 
 // Main Component
 const ProductList = () => {
@@ -198,6 +229,9 @@ const ProductList = () => {
   const [priceRange, setPriceRange] = useState([0, 500000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12); // Or you can make it dynamic
 
   // Derived values
   const maxPrice = useMemo(() => {
@@ -244,6 +278,7 @@ const ProductList = () => {
   const fetchProducts = useCallback(async () => {
     try {
       const data = await getProducts();
+      console.log("===========================>", data); // Check if you get the correct product data
       setProducts(data);
       setError("");
     } catch (error) {
@@ -258,16 +293,16 @@ const ProductList = () => {
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = products.filter((product) => {
       const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-      const matchesSearch = !searchQuery || 
+      const matchesSearch = !searchQuery ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesPrice = product.price_after_discount >= priceRange[0] && 
+      const matchesPrice = product.price_after_discount >= priceRange[0] &&
         product.price_after_discount <= priceRange[1];
       const matchesRating = selectedRating === 0 || (product.product_rating || 0) >= selectedRating;
 
       return matchesCategory && matchesSearch && matchesPrice && matchesRating;
     });
-
+    console.log("==========Filter Product=============>", filtered);
     switch (sortBy) {
       case "price-low":
         return filtered.sort((a, b) => a.price_after_discount - b.price_after_discount);
@@ -279,6 +314,13 @@ const ProductList = () => {
         return filtered;
     }
   }, [products, selectedCategory, searchQuery, priceRange, selectedRating, sortBy]);
+
+  // **Added logic to paginate the products client-side**
+  const paginateProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = currentPage * itemsPerPage;
+    return filteredAndSortedProducts.slice(startIndex, endIndex);
+  }, [filteredAndSortedProducts, currentPage, itemsPerPage]);
 
   // Categories
   const categories = useMemo(
@@ -363,13 +405,13 @@ const ProductList = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4 animate-fade-in">
-          Find the Perfect Match for You
+            Find the Perfect Match for You
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Explore our carefully curated collection of premium products
-            </p>
+          </p>
         </div>
-
+        {/* Admin/Vendor Controls */}
         {(user?.role === "admin" || user?.role === "vendor") && (
           <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8">
             <div className="flex gap-4 p-6">
@@ -392,7 +434,7 @@ const ProductList = () => {
             </div>
           </div>
         )}
-
+        {/* Search and Filters */}
         <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8">
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
@@ -452,17 +494,17 @@ const ProductList = () => {
           </div>
         </div>
 
-        {(
-          <FilterPanel
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            maxPrice={maxPrice}
-            selectedRating={selectedRating}
-            setSelectedRating={setSelectedRating}
-            resetFilters={resetFilters}
-          />
-        )}
-
+        {/* Filter Panel */}
+        <FilterPanel
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          maxPrice={maxPrice}
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          resetFilters={resetFilters}
+        />
+        {/* Product Listing */}
+        {/* Product Listing */}
         {loading ? (
           <LoadingSkeleton />
         ) : error ? (
@@ -483,7 +525,7 @@ const ProductList = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredAndSortedProducts.map((product) => (
+            {paginateProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -496,6 +538,14 @@ const ProductList = () => {
             ))}
           </div>
         )}
+
+        {/* Pagination Controls */}
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredAndSortedProducts.length}
+          itemsPerPage={itemsPerPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );
