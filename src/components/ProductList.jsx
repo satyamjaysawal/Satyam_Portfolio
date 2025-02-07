@@ -195,13 +195,13 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [priceRange, setPriceRange] = useState([0, 500000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
   // Derived values
   const maxPrice = useMemo(() => {
-    return Math.max(...products.map(p => p.price_after_discount), 5000);
+    return Math.max(...products.map(p => p.price_after_discount), 500000);
   }, [products]);
 
   // Event handlers
