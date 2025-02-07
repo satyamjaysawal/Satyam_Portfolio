@@ -31,7 +31,6 @@ const LoadingSkeleton = () => (
     ))}
   </div>
 );
-
 // Product Card Component
 const ProductCard = React.memo(({ product, user, handleUpdateProduct, navigate, handleImageError, imageErrors }) => (
   <div className="group bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden transition-all duration-300 hover:scale-102 hover:shadow-xl hover:shadow-purple-500/25">
@@ -148,8 +147,8 @@ const FilterPanel = React.memo(({
               key={rating}
               onClick={() => setSelectedRating(rating)}
               className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 ${selectedRating === rating
-                  ? "bg-purple-500 text-white"
-                  : "bg-white/5 text-gray-300 hover:bg-white/10"
+                ? "bg-purple-500 text-white"
+                : "bg-white/5 text-gray-300 hover:bg-white/10"
                 }`}
             >
               {rating === 0 ? (
@@ -232,6 +231,7 @@ const ProductList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12); // Or you can make it dynamic
+  const [isSearching, setIsSearching] = useState(false);
 
   // Derived values
   const maxPrice = useMemo(() => {
@@ -251,19 +251,23 @@ const ProductList = () => {
     setSearchQuery("");
   }, [maxPrice]);
 
-  const debouncedSetSearchQuery = useMemo(
-    () => debounce((value) => {
-      setSearchQuery(value);
-      const params = new URLSearchParams(window.location.search);
-      if (value) {
-        params.set("search", value);
-      } else {
-        params.delete("search");
-      }
-      window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
-    }, 300),
-    []
-  );
+  const debouncedSetSearchQuery = useMemo(() => debounce((value) => {
+    setIsSearching(true);  // Start loading spinner
+
+    setSearchQuery(value);
+
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+    window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+
+    setIsSearching(false);  // Stop loading spinner after the update
+  }, 300), []);
+
+
 
   const handleUpdateProduct = async (productId) => {
     try {
@@ -275,19 +279,40 @@ const ProductList = () => {
   };
 
   // Data fetching
+  // const fetchProducts = useCallback(async () => {
+  //   try {
+  //     const data = await getProducts();
+  //     console.log("============Get Products===============>", data); // Check if you get the correct product data
+  //     setProducts(data);
+  //     setError("");
+  //   } catch (error) {
+  //     setError("Error fetching products. Please try again.");
+  //     console.error("❌ Product fetch error:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, []);
+
   const fetchProducts = useCallback(async () => {
     try {
       const data = await getProducts();
-      console.log("===========================>", data); // Check if you get the correct product data
+      console.log("============Get Products===============>", data);
       setProducts(data);
       setError("");
     } catch (error) {
       setError("Error fetching products. Please try again.");
       console.error("❌ Product fetch error:", error);
+      // Call startRetryTimer when an error occurs
+      startRetryTimer();  // This triggers the retry timer to start
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [startRetryTimer]);  // Make sure startRetryTimer is included in the dependencies
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
 
   // Filtered and sorted products
   const filteredAndSortedProducts = useMemo(() => {
@@ -295,14 +320,18 @@ const ProductList = () => {
       const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
       const matchesSearch = !searchQuery ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Allow search by category
+        product.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())); // Search by tags if applicable
+
       const matchesPrice = product.price_after_discount >= priceRange[0] &&
         product.price_after_discount <= priceRange[1];
+
       const matchesRating = selectedRating === 0 || (product.product_rating || 0) >= selectedRating;
 
       return matchesCategory && matchesSearch && matchesPrice && matchesRating;
     });
-    console.log("==========Filter Product=============>", filtered);
+
     switch (sortBy) {
       case "price-low":
         return filtered.sort((a, b) => a.price_after_discount - b.price_after_discount);
@@ -314,6 +343,7 @@ const ProductList = () => {
         return filtered;
     }
   }, [products, selectedCategory, searchQuery, priceRange, selectedRating, sortBy]);
+
 
   // **Added logic to paginate the products client-side**
   const paginateProducts = useMemo(() => {
@@ -439,24 +469,47 @@ const ProductList = () => {
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
               <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" /> */}
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchQuery}
-                  onChange={(e) => debouncedSetSearchQuery(e.target.value)}
-                  className="w-full bg-white/5 border border-gray-700 rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                  onChange={(e) => setSearchQuery(e.target.value)}  // Store value on input change
+                  className="w-full bg-white/5 border border-gray-700 rounded-lg pl-12 pr-12 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
                 />
+
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 animate-spin">
+                    <div className="w-5 h-5 border-4 border-t-4 border-transparent border-t-purple-500 rounded-full" />
+                  </div>
+                )}
+
+
+                {/* Search Icon on the Right */}
+                <button
+                  onClick={() => debouncedSetSearchQuery(searchQuery)}  // Trigger search when the button is clicked
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  aria-label="Search"
+                >
+                  <Search className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+                </button>
                 {searchQuery && (
                   <button
-                    onClick={() => debouncedSetSearchQuery("")}
+                    onClick={() => {
+                      debouncedSetSearchQuery(""); // Reset the search query
+                      setSearchQuery(""); // Reset the search state
+                      resetFilters(); // Reset filters like price and rating
+                    }}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2"
                     aria-label="Clear search"
                   >
-                    <X className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+
                   </button>
+
                 )}
+
               </div>
+
 
               <div className="flex flex-wrap gap-4 items-center w-full md:w-auto">
                 <button

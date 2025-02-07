@@ -12,14 +12,17 @@ import {
   Smartphone,
   UserPlus,
   KeyRound,
-  Search
+  Search,
+  BarChart,         // Sale Analytics Icon
+  Monitor,          // Dashboard Icon
+  Package    
 } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -31,14 +34,14 @@ const Navbar = () => {
 
   useEffect(() => setMenuOpen(false), [location]);
 
-  const handleSearchSubmit = useCallback((e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${searchQuery}`);
-    }
-  }, [searchQuery, navigate]);
+  // const handleSearchSubmit = useCallback((e) => {
+  //   e.preventDefault();
+  //   if (searchQuery.trim()) {
+  //     navigate(`/products?search=${searchQuery}`);
+  //   }
+  // }, [searchQuery, navigate]);
 
-  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+  // const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
   return (
     <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gray-900/85 backdrop-blur-lg shadow-lg' : 'bg-gray-900/60'}`}>
@@ -59,24 +62,23 @@ const Navbar = () => {
 
           {/* No Role Restriction for these links */}
           <Link to="/dashboard" className="nav-link group">
+            <Monitor className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
             <span className="ml-1">Dashboard</span>
             <span className="nav-link-underline" />
           </Link>
 
           <Link to="/sale-analytics" className="nav-link group">
+            <BarChart className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
             <span className="ml-1">Sale Analytics</span>
             <span className="nav-link-underline" />
           </Link>
           {user?.role === 'admin' && (
             <>
-              <Link to="/admin-analysis" className="nav-link group">
+            <Link to="/admin-analysis" className="nav-link group">
+                <Package className="w-5 h-5 group-hover:text-teal-400 transition-colors duration-300" />
                 <span className="ml-1">Product Analysis +</span>
                 <span className="nav-link-underline" />
               </Link>
-              {/* <Link to="/vendor/orders" className="nav-link group">
-                <span className="ml-1">Your Orders</span>
-                <span className="nav-link-underline" />
-              </Link> */}
             </>
           )}
           {user?.role === 'vendor' && (
@@ -115,7 +117,7 @@ const Navbar = () => {
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center">
+        {/* <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center">
           <div className="relative group">
             <input 
               type="text" 
@@ -132,7 +134,7 @@ const Navbar = () => {
               <Search className="w-5 h-5" />
             </button>
           </div>
-        </form>
+        </form> */}
 
         {/* User Actions */}
         <div className="hidden md:flex items-center space-x-4">
@@ -220,7 +222,7 @@ const Navbar = () => {
       >
         <div className="p-4 space-y-4">
           {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative">
+          {/* <form onSubmit={handleSearchSubmit} className="relative">
             <input 
               type="text"
               placeholder="Search products..."
@@ -238,7 +240,7 @@ const Navbar = () => {
             >
               <Search className="w-5 h-5" />
             </button>
-          </form>
+          </form> */}
 
           {/* Mobile Navigation Links */}
           <div className="space-y-3">

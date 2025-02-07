@@ -182,64 +182,6 @@ export const login = async (username, password) => {
   }
 };
 
-
-
-
-// export const login = async (username, password) => {
-//   try {
-//     // Make POST request to login API
-//     const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
-    
-//     // Return the response data if the login is successful
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Login Error:", error);
-
-//     // Check if the error is due to no response from server
-//     if (!error.response) {
-//       throw {
-//         status: "network_error",
-//         message: "Network error! Unable to reach the server. Please check your internet connection."
-//       };
-//     }
-
-//     // Destructure status and data from error response
-//     const { status, data } = error.response;
-
-//     // Handle specific HTTP status codes and throw appropriate error messages
-
-//     // Authentication Errors (Invalid credentials)
-//     if (status === 401 || status === 403) {
-//       throw {
-//         status,
-//         message: data?.detail || "Invalid username or password. Please try again."
-//       };
-//     }
-
-//     // Validation Errors (Missing fields, wrong format, etc.)
-//     if (status === 400) {
-//       throw {
-//         status,
-//         message: data?.detail || "Invalid request. Please check your inputs."
-//       };
-//     }
-
-//     // Server Errors (Internal Server Error, Bad Gateway, etc.)
-//     if (status >= 500) {
-//       throw {
-//         status,
-//         message: "Server error! Please try again later."
-//       };
-//     }
-
-//     // General errors for other statuses
-//     throw {
-//       status,
-//       message: data?.message || "An unexpected error occurred. Please try again."
-//     };
-//   }
-// };
-
 // ✅ Register
 export const register = async (userData) => {
   try {

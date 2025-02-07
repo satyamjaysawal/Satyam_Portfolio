@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { RetryTimerContext } from "../context/RetryTimerContext";
-import { Loader2, Timer } from "lucide-react";
+import { Loader2, Package } from "lucide-react";
 
 const RetryTimerOverlay = () => {
   const { retryTimer, isServerDown } = useContext(RetryTimerContext);
@@ -10,6 +10,7 @@ const RetryTimerOverlay = () => {
   // Define Routes where Retry Timer should be visible
   const allowedRoutes = ["/", "/home", "/navbar", "/login", "/register", "/products", "/products/:productId"];
 
+  // Return null if server is not down or the current route is not in allowedRoutes
   if (!isServerDown || !allowedRoutes.includes(location.pathname)) return null;
 
   return (
