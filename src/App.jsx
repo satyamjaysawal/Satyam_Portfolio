@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
 import Footer from "./components/Footer";
+import ProductsSlider from "./components/ProductsSlider";
 // import ProductSearch from "./components/ProductSearch";
 import Cart from "./components/Cart";
 import Wishlist from "./components/Wishlist";

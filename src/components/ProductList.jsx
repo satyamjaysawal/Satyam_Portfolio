@@ -1,17 +1,193 @@
 import React, { useEffect, useState, useMemo, useCallback, useContext } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Star, Package, AlertCircle, Plus, RefreshCcw, Upload, Search, X, SlidersHorizontal } from "lucide-react";
+import { debounce } from "lodash";
 import { getProducts, getProductById } from "../api/api";
-import { ShoppingBag, Star, Package, AlertCircle, Plus, RefreshCcw, Upload } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 import { RetryTimerContext } from "../context/RetryTimerContext";
 import RetryTimerOverlay from "../components/RetryTimerOverlay";
-import { AuthContext } from "../context/AuthContext";
-import { debounce } from "lodash";
 
+// Utility Components
+const EmptyImagePlaceholder = () => (
+  <div className="flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 w-full h-full">
+    <Package className="w-16 h-16 text-gray-600" />
+  </div>
+);
+
+const LoadingSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    {[...Array(8)].map((_, index) => (
+      <div
+        key={index}
+        className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden animate-pulse"
+      >
+        <div className="aspect-square bg-gray-800" />
+        <div className="p-6 space-y-4">
+          <div className="h-4 bg-gray-800 rounded w-3/4" />
+          <div className="h-4 bg-gray-800 rounded w-1/2" />
+          <div className="h-8 bg-gray-800 rounded" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// Product Card Component
+const ProductCard = React.memo(({ product, user, handleUpdateProduct, navigate, handleImageError, imageErrors }) => (
+  <div className="group bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden transition-all duration-300 hover:scale-102 hover:shadow-xl hover:shadow-purple-500/25">
+    <div className="aspect-square relative overflow-hidden bg-gray-900">
+      {imageErrors[product.id] ? (
+        <EmptyImagePlaceholder />
+      ) : (
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          onError={() => handleImageError(product.id)}
+          loading="lazy"
+        />
+      )}
+      {product.stock_remaining < 10 && (
+        <div className="absolute top-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm">
+          Only {product.stock_remaining} left!
+        </div>
+      )}
+    </div>
+
+    <div className="p-6 space-y-4">
+      <div>
+        <h2 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-purple-300 transition-colors">
+          {product.name}
+        </h2>
+        <span className="inline-block px-3 py-1 text-sm text-purple-300 bg-purple-500/20 rounded-full">
+          {product.category}
+        </span>
+      </div>
+
+      <p className="text-gray-300 line-clamp-2 min-h-[3rem]">{product.description}</p>
+
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <p className="text-2xl font-bold text-green-400">
+            ₹{product.price_after_discount.toLocaleString()}
+          </p>
+          {product.price_before_discount && (
+            <p className="text-sm text-gray-400 line-through">
+              ₹{product.price_before_discount.toLocaleString()}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-1 bg-yellow-500/20 px-3 py-1 rounded-full">
+          <Star className="w-5 h-5 text-yellow-400 fill-current" />
+          <span className="text-yellow-300 font-medium">
+            {product.product_rating?.toFixed(1) || "N/A"}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex gap-4 pt-2">
+        <button
+          onClick={() => navigate(`/products/${product.id}`)}
+          className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-purple-500/25 font-medium"
+        >
+          View Details
+        </button>
+        {(user?.role === "admin" || user?.role === "vendor") && (
+          <button
+            onClick={() => handleUpdateProduct(product.id)}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-orange-500/25"
+          >
+            <RefreshCcw className="w-5 h-5" />
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+));
+
+// Filter Panel Component
+const FilterPanel = React.memo(({ 
+  priceRange, 
+  setPriceRange, 
+  maxPrice, 
+  selectedRating, 
+  setSelectedRating, 
+  resetFilters 
+}) => (
+  <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8 overflow-hidden animate-fade-in">
+    <div className="p-6 space-y-8">
+      <div className="space-y-4">
+        <label className="block text-white font-medium">
+          Price Range (₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()})
+        </label>
+        <div className="flex items-center gap-4">
+          <input
+            type="range"
+            min="0"
+            max={maxPrice}
+            value={priceRange[0]}
+            onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
+            className="w-full h-2 bg-purple-500/30 rounded-lg appearance-none cursor-pointer range-slider"
+          />
+          <input
+            type="range"
+            min="0"
+            max={maxPrice}
+            value={priceRange[1]}
+            onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
+            className="w-full h-2 bg-purple-500/30 rounded-lg appearance-none cursor-pointer range-slider"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <label className="block text-white font-medium">Minimum Rating</label>
+        <div className="flex flex-wrap gap-2">
+          {[0, 1, 2, 3, 4, 5].map((rating) => (
+            <button
+              key={rating}
+              onClick={() => setSelectedRating(rating)}
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 ${
+                selectedRating === rating
+                  ? "bg-purple-500 text-white"
+                  : "bg-white/5 text-gray-300 hover:bg-white/10"
+              }`}
+            >
+              {rating === 0 ? (
+                "All"
+              ) : (
+                <>
+                  {rating}
+                  <Star
+                    className={`w-4 h-4 ${
+                      selectedRating === rating ? "text-yellow-300 fill-current" : "text-yellow-300"
+                    }`}
+                  />
+                </>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <button
+        onClick={resetFilters}
+        className="w-full bg-white/5 text-gray-300 px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 font-medium"
+      >
+        Reset Filters
+      </button>
+    </div>
+  </div>
+));
+
+// Main Component
 const ProductList = () => {
   const { user } = useContext(AuthContext);
-  const { startRetryTimer } = useContext(RetryTimerContext); 
+  const { startRetryTimer } = useContext(RetryTimerContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // State management
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -19,105 +195,41 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
 
+  // Derived values
+  const maxPrice = useMemo(() => {
+    return Math.max(...products.map(p => p.price_after_discount), 5000);
+  }, [products]);
+
+  // Event handlers
   const handleImageError = useCallback((productId) => {
-    setImageErrors((prev) => ({ ...prev, [productId]: true }));
+    setImageErrors(prev => ({ ...prev, [productId]: true }));
   }, []);
 
-  // const fetchProducts = useCallback(() => {
-  //   setLoading(true);
-  //   setError("");
+  const resetFilters = useCallback(() => {
+    setPriceRange([0, maxPrice]);
+    setSelectedRating(0);
+    setSelectedCategory("all");
+    setSortBy("default");
+    setSearchQuery("");
+  }, [maxPrice]);
 
-  //   getProducts()
-  //     .then((data) => {
-  //       setProducts(data);
-  //     })
-  //     .catch((error) => {
-  //       setError("Error fetching products. Please try again.");
-  //       console.error("❌ Product fetch error:", error);
-  //       startRetryTimer(); // Start Global Retry Timer
-  //     })
-  //     .finally(() => setLoading(false));
-  // }, [startRetryTimer]);
-
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, [fetchProducts]);
-
-  const fetchProducts = useCallback(() => {
-    getProducts()
-      .then((data) => setProducts(data))
-      .catch((error) => {
-        setError("Error fetching products. Please try again.");
-        console.error("❌ Product fetch error:", error);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  const categories = useMemo(() => ["all", ...new Set(products.map(p => p.category))], [products]);
-
-  const sortProducts = useCallback((products) => {
-    switch (sortBy) {
-      case "price-low":
-        return [...products].sort((a, b) => a.price_after_discount - b.price_after_discount);
-      case "price-high":
-        return [...products].sort((a, b) => b.price_after_discount - a.price_after_discount);
-      case "rating":
-        return [...products].sort((a, b) => (b.product_rating || 0) - (a.product_rating || 0));
-      default:
-        return products;
-    }
-  }, [sortBy]);
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const query = queryParams.get("search") || "";
-    setSearchQuery(query);
-  }, [location.search]);
-
-  const filteredProducts = useMemo(() => {
-    return products
-      .filter(product =>
-        (selectedCategory === "all" || product.category === selectedCategory) &&
-        (product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-  }, [products, selectedCategory, searchQuery]);
-
-  const sortedProducts = useMemo(() => sortProducts(filteredProducts), [filteredProducts, sortProducts]);
-
-  const EmptyImagePlaceholder = () => (
-    <div className="flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl w-full h-full">
-      <Package className="w-12 h-12 text-gray-400" />
-    </div>
+  const debouncedSetSearchQuery = useMemo(
+    () => debounce((value) => {
+      setSearchQuery(value);
+      const params = new URLSearchParams(window.location.search);
+      if (value) {
+        params.set("search", value);
+      } else {
+        params.delete("search");
+      }
+      window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+    }, 300),
+    []
   );
-
-  const LoadingSkeleton = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {[...Array(8)].map((_, index) => (
-        <div key={index} className="bg-white rounded-xl p-4 shadow-lg space-y-4 animate-pulse">
-          <div className="aspect-square w-full bg-gray-100 rounded-xl mb-4" />
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-100 rounded w-3/4" />
-            <div className="h-4 bg-gray-100 rounded w-1/2" />
-            <div className="h-6 bg-gray-100 rounded" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  const debouncedSetSearchQuery = useMemo(() => debounce(setSearchQuery, 500), []);
-
-  useEffect(() => {
-    return () => {
-      debouncedSetSearchQuery.cancel();
-    };
-  }, [debouncedSetSearchQuery]);
 
   const handleUpdateProduct = async (productId) => {
     try {
@@ -128,31 +240,152 @@ const ProductList = () => {
     }
   };
 
+  // Data fetching
+  const fetchProducts = useCallback(async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+      setError("");
+    } catch (error) {
+      setError("Error fetching products. Please try again.");
+      console.error("❌ Product fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Filtered and sorted products
+  const filteredAndSortedProducts = useMemo(() => {
+    const filtered = products.filter((product) => {
+      const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+      const matchesSearch = !searchQuery || 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesPrice = product.price_after_discount >= priceRange[0] && 
+        product.price_after_discount <= priceRange[1];
+      const matchesRating = selectedRating === 0 || (product.product_rating || 0) >= selectedRating;
+
+      return matchesCategory && matchesSearch && matchesPrice && matchesRating;
+    });
+
+    switch (sortBy) {
+      case "price-low":
+        return filtered.sort((a, b) => a.price_after_discount - b.price_after_discount);
+      case "price-high":
+        return filtered.sort((a, b) => b.price_after_discount - a.price_after_discount);
+      case "rating":
+        return filtered.sort((a, b) => (b.product_rating || 0) - (a.product_rating || 0));
+      default:
+        return filtered;
+    }
+  }, [products, selectedCategory, searchQuery, priceRange, selectedRating, sortBy]);
+
+  // Categories
+  const categories = useMemo(
+    () => ["all", ...new Set(products.map((p) => p.category))],
+    [products]
+  );
+
+  // Effects
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const query = queryParams.get("search") || "";
+    setSearchQuery(query);
+  }, [location.search]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            observer.unobserve(img);
+          }
+        });
+      },
+      { rootMargin: "50px" }
+    );
+
+    document.querySelectorAll("img[data-src]").forEach((img) => observer.observe(img));
+
+    return () => observer.disconnect();
+  }, [filteredAndSortedProducts]);
+
+  // Styles
+  useEffect(() => {
+    const styles = `
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #a855f7;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .range-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        background: #9333ea;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fade-in 0.6s ease-out;
+      }
+    `;
+
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+    return () => document.head.removeChild(styleSheet);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-800 to-blue-900 text-white">
-       <RetryTimerOverlay />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <RetryTimerOverlay />
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-semibold text-gray-100 mb-2">Our Products</h1>
-          <p className="text-lg text-gray-300">Explore our curated selection of products.</p>
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-4 animate-fade-in">
+          Find the Perfect Match for You
+          </h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Explore our carefully curated collection of premium products
+            </p>
         </div>
 
         {(user?.role === "admin" || user?.role === "vendor") && (
-          <div className="bg-white rounded-xl shadow-lg p-4 mb-8 bg-opacity-25 backdrop-blur-md">
-            <div className="flex gap-4">
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8">
+            <div className="flex gap-4 p-6">
               <button
                 onClick={() => navigate("/add-product")}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105"
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-5 h-5" />
                 Add Product
               </button>
               {user?.role === "admin" && (
                 <button
                   onClick={() => navigate("/import-products")}
-                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105"
+                  className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-3 rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-300 shadow-lg hover:shadow-emerald-500/25"
                 >
-                  <Upload className="w-4 h-4" />
+                  <Upload className="w-5 h-5" />
                   Import Products
                 </button>
               )}
@@ -160,132 +393,106 @@ const ProductList = () => {
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow-lg p-4 mb-8 bg-opacity-25 backdrop-blur-md">
-          <div className="flex gap-6 items-center">
-            <div className="flex gap-4 items-center">
-              <label className="text-sm font-medium text-gray-300">Category:</label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-indigo-600 text-white border border-indigo-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex gap-4 items-center">
-              <label className="text-sm font-medium text-gray-300">Sort by:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-indigo-600 text-white border border-indigo-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="default">Default</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Rating</option>
-              </select>
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl mb-8">
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => debouncedSetSearchQuery(e.target.value)}
+                  className="w-full bg-white/5 border border-gray-700 rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => debouncedSetSearchQuery("")}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-4 items-center w-full md:w-auto">
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="flex items-center gap-2 bg-white/5 border border-gray-700 rounded-lg px-4 py-3 text-white hover:bg-white/10 transition-all duration-300"
+                >
+                  <SlidersHorizontal className="w-5 h-5" />
+                  Filters
+                </button>
+
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="bg-white/5 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category} className="bg-gray-900">
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-white/5 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                >
+                  <option value="default" className="bg-gray-900">Featured</option>
+                  <option value="price-low" className="bg-gray-900">Price: Low to High</option>
+                  <option value="price-high" className="bg-gray-900">Price: High to Low</option>
+                  <option value="rating" className="bg-gray-900">Top Rated</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
+        {(
+          <FilterPanel
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            maxPrice={maxPrice}
+            selectedRating={selectedRating}
+            setSelectedRating={setSelectedRating}
+            resetFilters={resetFilters}
+          />
+        )}
+
         {loading ? (
           <LoadingSkeleton />
         ) : error ? (
-          <div className="bg-white rounded-xl p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-500 text-lg mb-4">{error}</p>
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 text-center">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <p className="text-red-400 text-xl mb-6">{error}</p>
             <button
-              onClick={() => fetchProducts()}
-              className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-all duration-200"
+              onClick={fetchProducts}
+              className="bg-red-500 text-white px-8 py-3 rounded-lg hover:bg-red-600 transition-all duration-300 shadow-lg hover:shadow-red-500/25"
             >
-              Retry
+              Try Again
             </button>
           </div>
-        ) : sortedProducts.length === 0 ? (
-          <div className="bg-white rounded-xl p-8 text-center">
-            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No products found.</p>
+        ) : filteredAndSortedProducts.length === 0 ? (
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 text-center">
+            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-300 text-xl">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {sortedProducts.map((product) => (
-              <div
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filteredAndSortedProducts.map((product) => (
+              <ProductCard
                 key={product.id}
-                className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
-              >
-                <div className="aspect-square relative overflow-hidden">
-                  {imageErrors[product.id] ? (
-                    <EmptyImagePlaceholder />
-                  ) : (
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      onError={() => handleImageError(product.id)}
-                      loading="lazy"
-                    />
-                  )}
-                  {product.stock_remaining < 10 && (
-                    <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded-lg text-xs font-medium">
-                      Only {product.stock_remaining} left!
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-4">
-                  <div className="mb-2">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-1">
-                      {product.name}
-                    </h2>
-                    <span className="inline-block px-2 py-1 text-xs text-indigo-600 bg-indigo-50 rounded-full">
-                      {product.category}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.description}</p>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-lg font-semibold text-green-600">
-                        ₹{product.price_after_discount.toFixed(2)}
-                      </p>
-                      {product.price_before_discount && (
-                        <p className="text-sm text-gray-400 line-through">
-                          ₹{product.price_before_discount.toFixed(2)}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-medium text-yellow-700">
-                        {product.product_rating || "N/A"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <Link
-                      to={`/products/${product.id}`}
-                      className="block w-full text-center bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-200"
-                    >
-                      View Details
-                    </Link>
-                    {(user?.role === "admin" || user?.role === "vendor") && (
-                      <button
-                        onClick={() => handleUpdateProduct(product.id)}
-                        className="flex items-center gap-2 bg-orange-500 text-white px-6 py-2.5 rounded-lg hover:bg-orange-600 transition-all duration-200 transform hover:scale-105"
-                      >
-                        <RefreshCcw className="w-4 h-4" />
-                        Update
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+                product={product}
+                user={user}
+                handleUpdateProduct={handleUpdateProduct}
+                navigate={navigate}
+                handleImageError={handleImageError}
+                imageErrors={imageErrors}
+              />
             ))}
           </div>
         )}

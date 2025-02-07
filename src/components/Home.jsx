@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { getProducts } from "../api/api";
 import MobileCarousel from './MobileCarousel'; 
+import ProductList from "./ProductList";
+import ProductsSlider from './ProductsSlider';
 import {
   ShoppingCart,
   Filter,
@@ -242,6 +244,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+     
+      <ProductList/>
       <MobileCarousel />
       {/* ✅ Features Section */}
       <section className="bg-gray-50 py-16">
@@ -280,155 +284,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ✅ Products Section */}
-      {/* <section className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Featured Products</h2>
-        
-        </div>
-      </section>  */}
-
-      
-
-      <section className="bg-gray-900 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center text-white mb-8">Trending Products</h2>
-          <div className="overflow-hidden">
-            <div className="flex space-x-6 animate-scroll">
-              {products.slice(0, 10).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
 
-      <section className="relative bg-black/50 backdrop-blur-lg py-20">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
-            Shop Smarter, Live Better
-          </h1>
-          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Your One-Stop Shop for the Latest Trends and Must-Have Products!
-          </p>
-
-          <div className="flex justify-center space-x-4">
-            {user ? (
-              <Link
-                to="/cart"
-                className="flex items-center bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/30 px-6 py-3 rounded-lg transition"
-              >
-                <ShoppingCart className="mr-2" /> Cart
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 px-8 py-4 rounded-lg transition"
-              >
-                Start Shopping
-              </Link>
-            )}
-          </div>
-        </div>
-      </section>
+      <ProductsSlider />
 
 
-      {/* Filters Section */}
-      <section className="bg-gray-800 py-8">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-5 gap-4">
-            {/* Category Filter */}
-            <select
-              className="bg-gray-700 text-white p-2 rounded"
-              value={filters.category}
-              onChange={(e) => handleFilterChange({ category: e.target.value })}
-            >
-              <option value="">All Categories</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Fashion">Fashion</option>
-            </select>
 
-            {/* Price Range */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="range"
-                min="0"
-                max="5000"
-                value={filters.priceRange[1]}
-                onChange={(e) =>
-                  handleFilterChange({ priceRange: [0, Number(e.target.value)] })
-                }
-                className="w-full"
-              />
-              <span>${filters.priceRange[1]}</span>
-            </div>
 
-            {/* Rating Filter */}
-            <select
-              className="bg-gray-700 text-white p-2 rounded"
-              value={filters.rating}
-              onChange={(e) => handleFilterChange({ rating: Number(e.target.value) })}
-            >
-              <option value={0}>All Ratings</option>
-              <option value={4}>4★ & Above</option>
-              <option value={4.5}>4.5★ & Above</option>
-            </select>
 
-            {/* Sort By */}
-            <select
-              className="bg-gray-700 text-white p-2 rounded"
-              value={filters.sortBy}
-              onChange={(e) => handleFilterChange({ sortBy: e.target.value })}
-            >
-              <option value="featured">Featured</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-            </select>
-
-            {/* Search */}
-            <input
-              type="text"
-              placeholder="Search Products..."
-              value={filters.search}
-              onChange={handleSearchChange}
-              className="bg-gray-700 text-white p-2 rounded w-full"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Reset Filters Button */}
-      <div className="text-center py-4">
-        <button
-          onClick={resetFilters}
-          className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition"
-        >
-          Reset Filters
-        </button>
-      </div>
-
-      {/* Products Section */}
-      <section className="bg-gray-900 py-16">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
-            Featured Products
-          </h2>
-
-          {loading ? (
-            <div className="text-center text-xl">Loading products...</div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center text-xl">No products match the selected filters.</div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
       {/* ✅ Newsletter Section */}
       <section className="bg-gradient-to-r from-blue-900 to-indigo-900 py-16">
         <div className="max-w-7xl mx-auto px-6 text-center">
