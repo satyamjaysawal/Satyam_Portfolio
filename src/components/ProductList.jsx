@@ -97,6 +97,7 @@ const ProductCard = React.memo(({ product, user, handleUpdateProduct, navigate, 
             className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-orange-500/25"
           >
             <RefreshCcw className="w-5 h-5" />
+            <span>Update</span>
           </button>
         )}
       </div>
@@ -225,7 +226,7 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 500000]);
+  const [priceRange, setPriceRange] = useState([0, 150000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -235,7 +236,7 @@ const ProductList = () => {
 
   // Derived values
   const maxPrice = useMemo(() => {
-    return Math.max(...products.map(p => p.price_after_discount), 500000);
+    return Math.max(...products.map(p => p.price_after_discount), 150000);
   }, [products]);
 
   // Event handlers

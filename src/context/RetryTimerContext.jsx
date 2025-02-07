@@ -7,7 +7,7 @@ export const RetryTimerProvider = ({ children }) => {
   const [isServerDown, setIsServerDown] = useState(false);
 
   const startRetryTimer = useCallback(() => {
-    setRetryTimer(30);  // Set initial time to 45 seconds
+    setRetryTimer(5);  // Set initial time to 45 seconds
     setIsServerDown(true);  // Set server status to down
 
     // Create the interval to decrement the timer every second

@@ -25,10 +25,10 @@ const ProductAdd = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -38,7 +38,7 @@ const ProductAdd = () => {
     setSuccess(false);
 
     try {
-      const response = await addProduct(token, formData);
+      await addProduct(token, formData);
       setSuccess(true);
       navigate("/products");
     } catch (err) {
@@ -49,36 +49,36 @@ const ProductAdd = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8">
-          <div className="flex items-center mb-6">
-            <Package className="h-8 w-8 text-blue-600 mr-3" />
-            <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
+        <div className="bg-slate-800 shadow-2xl rounded-2xl p-6 sm:p-8 border border-slate-700">
+          <div className="flex items-center mb-8">
+            <Package className="h-8 w-8 text-emerald-400 mr-3" />
+            <h2 className="text-2xl font-bold text-white">Add New Product</h2>
           </div>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 rounded-md flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-              <p className="text-red-700">{error}</p>
+            <div className="mb-6 p-4 bg-red-500/10 rounded-xl flex items-center border border-red-500/20">
+              <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
+              <p className="text-red-400">{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-4 bg-green-50 rounded-md flex items-center">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
-              <p className="text-green-700">Product added successfully!</p>
+            <div className="mb-6 p-4 bg-emerald-500/10 rounded-xl flex items-center border border-emerald-500/20">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400 mr-2" />
+              <p className="text-emerald-400">Product added successfully!</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="name">
                   Product Name
                 </label>
                 <div className="relative">
-                  <Package className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <Package className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="text"
                     id="name"
@@ -86,17 +86,17 @@ const ProductAdd = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="category">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="category">
                   Category
                 </label>
                 <div className="relative">
-                  <Tags className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <Tags className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="text"
                     id="category"
@@ -104,17 +104,17 @@ const ProductAdd = () => {
                     value={formData.category}
                     onChange={handleChange}
                     required
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="description">
                   Description
                 </label>
                 <div className="relative">
-                  <FileText className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <FileText className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <textarea
                     id="description"
                     name="description"
@@ -122,17 +122,17 @@ const ProductAdd = () => {
                     onChange={handleChange}
                     required
                     rows="4"
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   ></textarea>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="price">
                   Price
                 </label>
                 <div className="relative">
-                  <DollarSign className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <DollarSign className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="number"
                     id="price"
@@ -141,17 +141,17 @@ const ProductAdd = () => {
                     onChange={handleChange}
                     required
                     min="0"
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="discount_percentage">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="discount_percentage">
                   Discount Percentage
                 </label>
                 <div className="relative">
-                  <Percent className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <Percent className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="number"
                     id="discount_percentage"
@@ -161,17 +161,17 @@ const ProductAdd = () => {
                     required
                     min="0"
                     max="100"
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="total_stock">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="total_stock">
                   Total Stock
                 </label>
                 <div className="relative">
-                  <Box className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <Box className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="number"
                     id="total_stock"
@@ -180,17 +180,17 @@ const ProductAdd = () => {
                     onChange={handleChange}
                     required
                     min="0"
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="expenditure_cost_inr">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="expenditure_cost_inr">
                   Expenditure Cost (INR)
                 </label>
                 <div className="relative">
-                  <DollarSign className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <DollarSign className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="number"
                     id="expenditure_cost_inr"
@@ -199,17 +199,17 @@ const ProductAdd = () => {
                     onChange={handleChange}
                     required
                     min="0"
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="image_url">
+                <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="image_url">
                   Image URL
                 </label>
                 <div className="relative">
-                  <Image className="h-5 w-5 text-gray-400 absolute top-3 left-3" />
+                  <Image className="h-5 w-5 text-slate-500 absolute top-3 left-3" />
                   <input
                     type="url"
                     id="image_url"
@@ -217,17 +217,17 @@ const ProductAdd = () => {
                     value={formData.image_url}
                     onChange={handleChange}
                     required
-                    className="pl-10 w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full rounded-xl border border-slate-600 bg-slate-700/50 py-2 px-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-4">
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-lg text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105"
               >
                 {loading ? (
                   <>

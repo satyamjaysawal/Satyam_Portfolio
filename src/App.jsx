@@ -30,6 +30,7 @@ import Chatbot from './components/Chatbot';
 import NotFound from "./pages/NotFound";
 import { RetryTimerProvider } from "./context/RetryTimerContext";
 import RetryTimerOverlay from "./components/RetryTimerOverlay";
+import ImportProductsButton from "./components/ImportProductsButton"; // Correct import path
 
 function App() {
   return (
@@ -73,6 +74,8 @@ function App() {
                   <Route path="/shipments" element={<ManageShipments />} />
                   <Route path="/sale-analytics" element={<SaleAnalytics />} />
                   <Route path="/sale-analytics-chart" element={<SaleAnalyticsCharts />} />
+
+                  <Route path="/import-products" element={<ImportProductsButton />} />
                 </Route>
 
                 {/* 404 Page */}

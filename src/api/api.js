@@ -10,6 +10,34 @@ const getAuthHeaders = (token) => ({
 
 
 
+export const uploadProducts = async (products, token) => {
+  try {
+    console.log("Starting product upload...");
+    console.log("Products to upload:", products);
+    console.log("Using token:", token);
+
+    const response = await axios.post(
+      `${API_BASE_URL}/product/products/import`, 
+      products,
+      getAuthHeaders(token)
+    );
+
+    console.log("Upload successful, response received:", response.data);
+
+    return response.data; // Return response data
+  } catch (error) {
+    // Check if there is a response from the server
+    if (error.response) {
+      console.error("Error response from server:", error.response);
+      throw new Error(error.response.data.message || "Error uploading products");
+    } else {
+      console.error("Error with the request or server:", error.message);
+      throw new Error("Error uploading products");
+    }
+  }
+};
+
+
 // API call to fetch products for analysis (Admin only)
 const getProductsForAnalysis = async (token) => {
   try {
