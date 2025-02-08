@@ -60,7 +60,7 @@ const Dashboard = () => {
           {user?.role === "admin" && (
             <>
               <DashboardCard
-                to="/users"
+                to="/profile"
                 title="Manage Users"
                 description="View and manage user accounts, permissions, and roles"
                 icon="👥"
