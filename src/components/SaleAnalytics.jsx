@@ -157,7 +157,7 @@ const SaleAnalytics = () => {
               <h3 className="text-xl font-semibold text-white">Total Revenue</h3>
               <BarChart className="w-8 h-8 text-teal-400" />
             </div>
-            <p className="text-3xl font-bold text-teal-300">${salesData.totalRevenue.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-teal-300">₹{salesData.totalRevenue.toLocaleString()}</p>
           </div>
 
           {/* Best Performing Products */}
@@ -206,7 +206,7 @@ const SaleAnalytics = () => {
                 className="bg-gray-800 rounded-lg p-3 text-center hover:bg-gray-700 transition"
               >
                 <p className="text-sm text-gray-400">Month {monthData.month}</p>
-                <p className="text-green-400 font-bold">${monthData.total_revenue}</p>
+                <p className="text-green-400 font-bold">₹{monthData.total_revenue}</p>
               </div>
             ))}
           </div>

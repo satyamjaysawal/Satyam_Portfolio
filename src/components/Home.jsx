@@ -28,7 +28,7 @@ const Home = () => {
   });
   
   const features = [
-    { title: "Free Shipping", description: "On orders over $100", icon: "🚚" },
+    { title: "Free Shipping", description: "On orders over ₹2000", icon: "🚚" },
     { title: "24/7 Support", description: "Always here to help", icon: "💬" },
     { title: "Secure Payments", description: "100% secure transactions", icon: "🔒" },
     { title: "Easy Returns", description: "30-day return policy", icon: "↩️" },
@@ -148,11 +148,11 @@ const Home = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <span className="text-cyan-400 font-bold">
-              ${product.price_after_discount}
+            ₹{product.price_after_discount}
             </span>
             {product.discount_percentage > 0 && (
               <span className="text-green-400 text-sm line-through">
-                ${product.price_before_discount}
+              ₹{product.price_before_discount}
               </span>
             )}
           </div>
