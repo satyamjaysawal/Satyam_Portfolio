@@ -41,6 +41,24 @@
 // });
 
 
+// import { defineConfig } from 'vite';
+// import react from '@vitejs/plugin-react';
+
+// export default defineConfig({
+//   plugins: [react()],
+//   resolve: {
+//     alias: {
+//       '@': '/src',
+//     },
+//   },
+//   server: {
+//     routes: {
+//       "/*": "index.html" // ✅ Serve `index.html` for all unknown routes (Fixes 404 issue on reload)
+//     },
+//   },
+//   base: "/",
+// });
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -52,10 +70,13 @@ export default defineConfig({
     },
   },
   server: {
-    routes: {
-      "/*": "index.html" // ✅ Serve `index.html` for all unknown routes (Fixes 404 issue on reload)
-    },
+    port: 5173,
+    open: true,
+    strictPort: true,
   },
-  base: "/",
+  build: {
+    outDir: "dist",
+  },
+  base: "/", // ✅ Correct base path
 });
 
