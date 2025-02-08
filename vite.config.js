@@ -52,8 +52,10 @@ export default defineConfig({
     },
   },
   server: {
-    historyApiFallback: true, // ✅ Reload issue fix (serve index.html on unknown routes)
+    routes: {
+      "/*": "index.html" // ✅ Serve `index.html` for all unknown routes (Fixes 404 issue on reload)
+    },
   },
-  base: "/", // ✅ Correct base path
+  base: "/",
 });
 
