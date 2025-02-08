@@ -28,6 +28,19 @@
 
 
 
+// import { defineConfig } from 'vite';
+// import react from '@vitejs/plugin-react';
+
+// export default defineConfig({
+//   plugins: [react()],
+//   resolve: {
+//     alias: {
+//       '@': '/src',
+//     },
+//   },
+// });
+
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -38,4 +51,9 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  server: {
+    historyApiFallback: true, // ✅ Reload issue fix (serve index.html on unknown routes)
+  },
+  base: "/", // ✅ Correct base path
 });
+
