@@ -199,51 +199,83 @@ const Home = () => {
 
       {/* ✅ Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-blue-800 text-white py-24">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
-        <div className="relative text-center max-w-7xl mx-auto px-6">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-            <span className="block">Discover Amazing</span>
-            <span className="block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              Products Today
-            </span>
-          </h1>
-          <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-            Your one-stop destination for quality products at unbeatable prices.
-            Join thousands of satisfied customers shopping with confidence.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            {user ? (
-              <>
-                <Link
-                  to="/cart"
-                  className="px-6 py-3 text-lg font-medium bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-xl shadow-lg hover:from-emerald-600 hover:to-cyan-600 transform transition-all hover:scale-105"
-                >
-                  🛒 View Cart
-                </Link>
-                <Link
-                  to="/orders"
-                  className="px-6 py-3 text-lg font-medium bg-white text-gray-900 rounded-xl shadow-lg hover:bg-gray-100 transform transition-all hover:scale-105"
-                >
-                  📦 My Orders
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className="px-6 py-3 text-lg font-medium bg-purple-500 text-white rounded-xl shadow-lg hover:bg-purple-600 transform transition-all hover:scale-105"
-                >
-                  📊 Dashboard
-                </Link>
-              </>
-            ) : (
+  <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
+  <div className="relative text-center max-w-7xl mx-auto px-6">
+    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+      <span className="block">Discover Amazing</span>
+      <span className="block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+        Products Today
+      </span>
+    </h1>
+    <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+      Your one-stop destination for quality products at unbeatable prices.
+      Join thousands of satisfied customers shopping with confidence.
+    </p>
+
+    <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+      {user ? (
+        <>
+          {/* ✅ Customer Links */}
+          {user.role === "customer" && (
+            <>
               <Link
-                to="/login"
+                to="/cart"
                 className="px-6 py-3 text-lg font-medium bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-xl shadow-lg hover:from-emerald-600 hover:to-cyan-600 transform transition-all hover:scale-105"
               >
-                🔐 Login to Start Shopping
+                🛒 View Cart
               </Link>
-            )}
-          </div>
-        </div>
-      </section>
+              <Link
+                to="/orders"
+                className="px-6 py-3 text-lg font-medium bg-white text-gray-900 rounded-xl shadow-lg hover:bg-gray-100 transform transition-all hover:scale-105"
+              >
+                📦 My Orders
+              </Link>
+            </>
+          )}
+
+          {/* ✅ Vendor Links */}
+          {user.role === "vendor" && (
+            <>
+              <Link
+                to="/add-product"
+                className="px-6 py-3 text-lg font-medium bg-green-500 text-white rounded-xl shadow-lg hover:bg-green-600 transform transition-all hover:scale-105"
+              >
+                ➕ Add Product
+              </Link>
+
+            </>
+          )}
+
+          {/* ✅ Admin-only Links */}
+          {user.role === "admin" && (
+            <Link
+              to="/orders-all"
+              className="px-6 py-3 text-lg font-medium bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-600 transform transition-all hover:scale-105"
+            >
+              📦 All Orders Manage
+            </Link>
+          )}
+
+          {/* ✅ Dashboard for All Users */}
+          <Link
+            to="/dashboard"
+            className="px-6 py-3 text-lg font-medium bg-purple-500 text-white rounded-xl shadow-lg hover:bg-purple-600 transform transition-all hover:scale-105"
+          >
+            📊 Dashboard
+          </Link>
+        </>
+      ) : (
+        <Link
+          to="/login"
+          className="px-6 py-3 text-lg font-medium bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-xl shadow-lg hover:from-emerald-600 hover:to-cyan-600 transform transition-all hover:scale-105"
+        >
+          🔐 Login to Start Shopping
+        </Link>
+      )}
+    </div>
+  </div>
+</section>
+
      
       <ProductList/>
       <MobileCarousel />

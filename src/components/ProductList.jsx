@@ -308,7 +308,7 @@ const ProductList = () => {
     // Set a timeout to trigger the retry timer if fetch takes too long
     const timeoutId = setTimeout(() => {
       startRetryTimer();
-    }, 5000);
+    }, 10000);
 
     try {
       const data = await getProducts();

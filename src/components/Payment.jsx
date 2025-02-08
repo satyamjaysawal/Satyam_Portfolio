@@ -81,8 +81,14 @@ const Payment = () => {
     const messages = {
       paid_shipped: {
         type: "success",
+        icon: "🚚",
+        message: "Your order has been shipped! You will receive a tracking ID soon. Stay tuned! 📦",
+        classes: "bg-blue-50 border-blue-500 text-blue-700"
+      },
+      paid_delivered: {
+        type: "success",
         icon: "✅",
-        message: "Your payment has been successfully processed! Your order is now being shipped. Please wait for the shipment to be updated by the vendor or admin.",
+        message: "Your order has been delivered successfully! Thank you for shopping with us. 🎉",
         classes: "bg-green-50 border-green-500 text-green-700"
       },
       paid_pending: {
@@ -90,12 +96,6 @@ const Payment = () => {
         icon: "⏳",
         message: "Your payment has been successfully processed! Your order is awaiting shipment. Please check back for shipment updates from the vendor or admin.",
         classes: "bg-yellow-50 border-yellow-500 text-yellow-700"
-      },
-      paid_not_shipped: {
-        type: "info",
-        icon: "⏳",
-        message: "Your payment has been successfully processed, but your order has not been shipped yet. Please wait for the shipment status to be updated by the vendor or admin.",
-        classes: "bg-blue-50 border-blue-500 text-blue-700"
       },
       pending_payment: {
         type: "error",
@@ -108,10 +108,10 @@ const Payment = () => {
     let messageKey;
     if (order.payment_status === "Paid" && order.shipment_status === "Shipped") {
       messageKey = "paid_shipped";
+    } else if (order.payment_status === "Paid" && order.shipment_status === "Delivered") {
+      messageKey = "paid_delivered";
     } else if (order.payment_status === "Paid" && order.shipment_status === "Pending") {
       messageKey = "paid_pending";
-    } else if (order.payment_status === "Paid" && order.shipment_status !== "Shipped") {
-      messageKey = "paid_not_shipped"; // New message for paid but not shipped
     } else if (order.payment_status !== "Paid") {
       messageKey = "pending_payment";
     }
