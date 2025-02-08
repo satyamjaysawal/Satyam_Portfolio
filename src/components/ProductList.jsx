@@ -279,41 +279,57 @@ const ProductList = () => {
     }
   };
 
-  // Data fetching
+
+
   // const fetchProducts = useCallback(async () => {
   //   try {
   //     const data = await getProducts();
-  //     console.log("============Get Products===============>", data); // Check if you get the correct product data
+  //     console.log("============Get Products===============>", data);
   //     setProducts(data);
   //     setError("");
   //   } catch (error) {
   //     setError("Error fetching products. Please try again.");
   //     console.error("❌ Product fetch error:", error);
+  //     // Call startRetryTimer when an error occurs
+  //     startRetryTimer();  // This triggers the retry timer to start
   //   } finally {
   //     setLoading(false);
   //   }
-  // }, []);
+  // }, [startRetryTimer]);  // Make sure startRetryTimer is included in the dependencies
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [fetchProducts]);
 
   const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
+    // Set a timeout to trigger the retry timer if fetch takes too long
+    const timeoutId = setTimeout(() => {
+      startRetryTimer();
+    }, 5000);
+
     try {
       const data = await getProducts();
-      console.log("============Get Products===============>", data);
+      clearTimeout(timeoutId); // Clear timeout if data arrives in time
+
+      console.log("✅ Products fetched:", data);
       setProducts(data);
       setError("");
     } catch (error) {
       setError("Error fetching products. Please try again.");
       console.error("❌ Product fetch error:", error);
-      // Call startRetryTimer when an error occurs
-      startRetryTimer();  // This triggers the retry timer to start
+      startRetryTimer(); // Trigger retry on failure
     } finally {
+      clearTimeout(timeoutId); // Ensure timeout is cleared
       setLoading(false);
     }
-  }, [startRetryTimer]);  // Make sure startRetryTimer is included in the dependencies
+  }, [startRetryTimer]);
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
-
+  }, []); // Run only once when the component mounts
 
   // Filtered and sorted products
   const filteredAndSortedProducts = useMemo(() => {
