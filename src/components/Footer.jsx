@@ -1,187 +1,94 @@
-import React from 'react';
-import { Link } from "react-router-dom";
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  ShoppingCart, 
-  Mail, 
-  Phone, 
-  MapPin,
-  ExternalLink,
-  ArrowRight,
-  CreditCard
-} from "lucide-react";
+import React from "react";
+import { Linkedin, Twitter, Github } from "lucide-react";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   const socialLinks = [
-    { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
-    { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
-    { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
-    { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" }
-  ];
-
-  const quickLinks = [
-    { to: "/about", label: "About Us" },
-    { to: "/contact", label: "Contact" },
-    { to: "/privacy", label: "Privacy Policy" },
-    { to: "/terms", label: "Terms & Conditions" }
-  ];
-
-  const paymentMethods = [
-    { icon: 'visa', color: 'text-blue-500', name: 'Visa' },
-    { icon: 'mastercard', color: 'text-red-500', name: 'MasterCard' },
-    { icon: 'paypal', color: 'text-blue-400', name: 'PayPal' },
-    { icon: 'amex', color: 'text-green-500', name: 'Amex' },
-    { icon: 'stripe', color: 'text-purple-500', name: 'Stripe' }
+    {
+      name: "LinkedIn",
+      url: "https://in.linkedin.com/in/satyam-jaysawal-9b58b7238",
+      icon: <Linkedin className="w-6 h-6" />,
+    },
+    {
+      name: "Twitter",
+      url: "#",
+      icon: <Twitter className="w-6 h-6" />,
+    },
+    {
+      name: "GitHub",
+      url: "https://github.com/satyamjaysawal",
+      icon: <Github className="w-6 h-6" />,
+    },
   ];
 
   return (
-    <footer className="relative bg-gradient-to-b from-gray-900/80 to-gray-900/95 backdrop-blur-md text-white">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-500/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-blue-500/10 rounded-full blur-2xl" />
-      </div>
-
-      <div className="relative container mx-auto px-6 py-12">
-        {/* Top Section with Logo and Social Links */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 rounded-lg blur group-hover:blur-md transition-all" />
-              <div className="relative bg-gray-900 p-2 rounded-lg">
-                <ShoppingCart className="w-6 h-6 group-hover:scale-110 transition-transform text-cyan-300" />
-              </div>
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
-              E-Commerce
-            </span>
-          </Link>
-
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            {socialLinks.map((social, index) => (
-              <a
-                key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group"
-                aria-label={social.label}
-              >
-                <social.icon className="w-6 h-6 text-gray-400 hover:text-cyan-300 transition-all transform group-hover:scale-110" />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10 border-t border-white/10">
-          {/* About Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
-              About Us
+    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Section */}
+        <div className="py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Brand Section */}
+          <div className="text-center md:text-left space-y-4">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Portfolio
             </h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Your premier destination for exceptional shopping experiences with meticulously curated products and unparalleled customer service.
+              Creating amazing experiences through innovative design and technology.
             </p>
-            <Link 
-              to="/about" 
-              className="inline-flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors group"
-            >
-              <span>Discover Our Story</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
-              Quick Navigation
-            </h3>
-            <nav className="grid grid-cols-2 gap-2 text-sm">
-              {quickLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  to={link.to}
-                  className="text-gray-400 hover:text-cyan-300 transition-colors flex items-center space-x-2 group"
+          <div className="text-center space-y-4">
+            <h4 className="text-lg font-semibold text-white">Quick Links</h4>
+            <nav className="space-y-3">
+              {['About', 'Projects', 'Blog', 'Contact'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="block text-gray-400 hover:text-white transition-colors duration-300"
                 >
-                  <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span>{link.label}</span>
-                </Link>
+                  {item}
+                </a>
               ))}
             </nav>
           </div>
 
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
-              Get in Touch
-            </h3>
-            <div className="space-y-3">
-              {[
-                { icon: Mail, text: "support@ecommerce.com" },
-                { icon: Phone, text: "(555) 123-4567" },
-                { icon: MapPin, text: "123 Commerce St, Business City, 12345" }
-              ].map(({ icon: Icon, text }, index) => (
-                <div key={index} className="flex items-center space-x-3 text-gray-400 group">
-                  <div className="p-2 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">
-                    <Icon className="w-5 h-5 text-cyan-300" />
-                  </div>
-                  <span className="text-sm">{text}</span>
-                </div>
+          {/* Contact Section */}
+          <div className="text-center md:text-right space-y-4">
+            <h4 className="text-lg font-semibold text-white">Get in Touch</h4>
+            <p className="text-gray-400 text-sm">
+              sjrecm9258@gmail.com
+            </p>
+            {/* Social Links */}
+            <div className="flex justify-center md:justify-end space-x-4">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.url}
+                  className="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all duration-300 hover:scale-110 text-gray-400 hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow on ${social.name}`}
+                >
+                  {social.icon}
+                </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Payment & Legal Section */}
-        <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            {/* Payment Methods */}
-            <div className="flex flex-wrap items-center gap-4 mb-6 md:mb-0">
-              <h4 className="text-base font-bold text-white mr-4">We Accept:</h4>
-              {paymentMethods.map((method, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <CreditCard className={`w-6 h-6 ${method.color}`} />
-                  <span className={`${method.color} font-semibold text-sm`}>
-                    {method.name}
-                  </span>
-                </div>
-              ))}
+        {/* Bottom Section */}
+        <div className="border-t border-gray-800 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} Your Brand. All rights reserved.
+            </p>
+            <div className="space-x-4">
+              <a href="#privacy" className="text-gray-400 hover:text-white">
+                Privacy Policy
+              </a>
+              <a href="#terms" className="text-gray-400 hover:text-white">
+                Terms of Service
+              </a>
             </div>
-
-            {/* Social Media */}
-            <div>
-              <h4 className="text-sm font-bold text-white mb-2">Follow Us:</h4>
-              <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors"
-                    aria-label={social.label}
-                  >
-                    <social.icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Copyright and Additional Links */}
-          <div className="mt-8 pt-4 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-            <p>&copy; {currentYear} E-Commerce Inc. All Rights Reserved.</p>
-            <nav className="flex space-x-4 mt-4 md:mt-0">
-              {["Accessibility", "Sitemap", "Affiliate Program"].map((link, index) => (
-                <a key={index} href="#" className="hover:text-white transition-colors">
-                  {link}
-                </a>
-              ))}
-            </nav>
           </div>
         </div>
       </div>
