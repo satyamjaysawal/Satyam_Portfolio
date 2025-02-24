@@ -185,7 +185,7 @@ const Hero = () => {
               style={{ fontFamily: "'Clicker Script', cursive" }}
             >
               Satyam Jaysawal
-              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 opacity-70 rounded-full"></span>
+              {/* <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 opacity-70 rounded-full"></span> */}
             </span>
           </h1>
 
