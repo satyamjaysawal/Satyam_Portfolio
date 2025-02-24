@@ -11,6 +11,8 @@ PortFolio UI Link : [https://satyam-portfolio-q196.onrender.com/](https://satyam
 
 ![image](https://github.com/user-attachments/assets/1e41bc78-13de-4589-afae-1eabcc217a3b)
 
+![image](https://github.com/user-attachments/assets/54ce0cb4-d025-4e47-bc73-ef74fd865558)
+
 
 ![image](https://github.com/user-attachments/assets/f6c1d43c-dda7-4caa-a735-1bede8338080)
 
