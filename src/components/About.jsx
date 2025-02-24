@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Mail, ArrowRight, Star, Code, Brain, Cloud, ChevronRight, ExternalLink } from "lucide-react";
 
 const About = () => {
@@ -121,11 +121,11 @@ const About = () => {
 
         {/* Call to Action */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16">
-          <button className="group px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-medium transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center gap-2">
+          <button id="projects" className="group px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-medium transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center gap-2">
             View My Work
             <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
-          <button className="group px-6 py-3 border border-purple-500/30 rounded-xl text-gray-300 hover:bg-purple-500/10 transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">
+          <button id="contact" className="group px-6 py-3 border border-purple-500/30 rounded-xl text-gray-300 hover:bg-purple-500/10 transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">
             Contact Me
             <Mail className="w-4 h-4 group-hover:rotate-12 transition-transform" />
           </button>

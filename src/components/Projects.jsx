@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { ExternalLink, Github, Sparkles, Code2, Star } from 'lucide-react';
+import React, { useState } from 'react';
 
 const projects = [
   {
@@ -221,159 +220,175 @@ const projects = [
 ];
 
 
-const ProjectCard = ({ project, index }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      className="group relative bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-2xl overflow-hidden border border-gray-700/50 transition-all duration-500 hover:scale-[1.02]"
-      style={{
-        animationDelay: `${index * 200}ms`,
-        animation: 'fadeIn 0.6s ease-out forwards'
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Animated Gradient Border */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-      
-      {/* Glass Morphism Effect */}
-      <div className="absolute inset-0 backdrop-blur-sm bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* Content Container */}
-      <div className="relative z-10">
-        {/* Media Container */}
-        <div className="relative w-full h-48 lg:h-56 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10" />
-          {project.videoUrl ? (
-            <iframe
-              src={project.videoUrl}
-              title={project.title}
-              className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-              frameBorder="0"
-              allow="autoplay; fullscreen"
-              allowFullScreen
-            />
-          ) : (
-            <img 
-              src={project.imageUrl || '/api/placeholder/400/300'}
-              alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-            />
-          )}
-          
-          {/* Featured Badge */}
-          {project.featured && (
-            <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 backdrop-blur-md rounded-full border border-yellow-500/20">
-              <Star className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium text-yellow-400">Featured</span>
-            </div>
-          )}
-        </div>
-
-        {/* Category Badge */}
-        <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-purple-500/20 backdrop-blur-md rounded-full border border-purple-500/20 shadow-lg transform -translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-          <Code2 className="w-4 h-4 text-purple-400" />
-          <span className="text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            {project.category}
-          </span>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-4">
-          <div>
-            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
-              {project.title}
-            </h3>
-            <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">
-              {project.description}
-            </p>
-          </div>
-
-          {/* Tech Stack */}
-          <div className="flex flex-wrap gap-2">
-            {project.tech.map((tech, index) => (
-              <span 
-                key={index}
-                className="px-2 py-1 text-xs font-medium text-purple-200 bg-purple-500/10 rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors duration-300"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          {/* Action Links */}
-          <div className="flex items-center gap-3 pt-2">
-            <a 
-              href={project.githubLink} 
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-300 border border-gray-700 group"
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <Github className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Code
-              </span>
-            </a>
-            <a 
-              href={project.deployedLink} 
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-lg transition-all duration-300 shadow-lg shadow-purple-500/20 group"
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-              Demo
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Projects = () => {
-  useEffect(() => {
-    const iframeElements = document.querySelectorAll('iframe');
-    iframeElements.forEach(iframe => {
-      const iframeSrc = iframe.getAttribute('src');
-      if (iframeSrc && !iframeSrc.includes('autoplay=1')) {
-        iframe.setAttribute('src', `${iframeSrc}?autoplay=1&mute=1`);
-      }
-    });
-  }, []);
+  const [activeProject, setActiveProject] = useState(null);
 
   return (
-    <section id="projects" className="relative py-24 bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-hidden">
-      {/* Animated Background */}
+    <section id="projects" className="relative py-24 px-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden">
+      {/* Enhanced Animated Background with more dynamic elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-600/10 rounded-full blur-3xl animate-pulse delay-500" />
         <div className="absolute top-1/2 left-1/4 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-700" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+        <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-cyan-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        
+        {/* Enhanced decorative grid with animated opacity */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-50 animate-pulse" />
       </div>
 
       {/* Content Container */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+      <div className="relative container mx-auto max-w-6xl z-10">
+        {/* Enhanced Header Section with animated underline */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center space-x-4 mb-4">
-            <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-purple-400" />
-            <span className="text-purple-400 font-medium tracking-wider text-sm uppercase">Portfolio Showcase</span>
-            <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-purple-400" />
+            <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-purple-400" />
+            <span className="text-purple-400 font-medium tracking-wider text-sm">PORTFOLIO PROJECTS SHOWCASE</span>
+            <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-purple-400" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-6">
+          <h2 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-6">
             Featured Projects
           </h2>
           <p className="text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed text-gray-300">
             Explore my latest web development projects showcasing modern design and technical expertise
           </p>
+          
+          {/* Animated underline */}
+          <div className="relative h-1 w-32 mx-auto mt-6 overflow-hidden rounded-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 animate-pulse"></div>
+          </div>
         </div>
 
-        {/* Projects Grid - Now 3 columns on large screens */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* Enhanced Projects Grid with staggered animation effect */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <div
+              key={project.id}
+              className={`group bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 p-6 rounded-xl hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-500 hover:-translate-y-2`}
+              style={{ 
+                animationDelay: `${index * 100}ms`,
+                transitionDelay: `${index * 50}ms`
+              }}
+              onMouseEnter={() => setActiveProject(project.id)}
+              onMouseLeave={() => setActiveProject(null)}
+            >
+              {/* Enhanced Category Badge with glow effect */}
+              <div className="mb-4">
+                <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all duration-300">
+                  {project.category}
+                </span>
+              </div>
+              
+              {/* Enhanced Project Title with animated gradient */}
+              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
+                {project.title}
+              </h3>
+              
+              {/* Project Description with fade-in effect */}
+              <p className="text-gray-300 text-sm mb-4 group-hover:text-white transition-colors duration-300">{project.description}</p>
+              
+              {/* Enhanced Tech Stack pills with hover effects */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {project.tech.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-1 rounded-md bg-gray-700/50 text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 hover:text-white transition-all duration-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              {/* Enhanced Media Container with floating animation */}
+              <div className="relative mb-6 rounded-lg overflow-hidden group">
+                {/* Video Player with enhanced controls */}
+                {project.videoUrl && (
+                  <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden shadow-lg shadow-purple-500/10 group-hover:shadow-purple-500/30 transition-all duration-500">
+                    <video
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 scale-105 group-hover:scale-100"
+                      controls
+                      loop
+                      muted
+                    >
+                      <source src={project.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                    {/* Custom Play Button Overlay with pulse animation */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600/80 to-pink-600/80 text-white group-hover:from-purple-500 group-hover:to-pink-500 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-purple-500/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                    {/* Decorative corner accents */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                )}
+
+                {/* Enhanced Image with zoom and glow effects */}
+                {project.imageUrl && !project.videoUrl && (
+                  <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden shadow-lg shadow-purple-500/10 group-hover:shadow-purple-500/30 transition-all duration-500">
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                    />
+                    {/* Decorative corner accents */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                )}
+              </div>
+
+              {/* Enhanced Action Links with animated effects */}
+              <div className="flex justify-between items-center mt-auto">
+                <a
+                  href={project.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-sm text-gray-400 hover:text-purple-400 transition-colors duration-300"
+                >
+                  <svg className="w-4 h-4 mr-1 group-hover:animate-bounce" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385c.6.105.825-.255.825-.57c0-.285-.015-1.23-.015-2.235c-3.015.555-3.795-.735-4.035-1.41c-.135-.345-.72-1.41-1.23-1.695c-.42-.225-1.02-.78-.015-.795c.945-.015 1.62.87 1.845 1.23c1.08 1.815 2.805 1.305 3.495.99c.105-.78.42-1.305.765-1.605c-2.67-.3-5.46-1.335-5.46-5.925c0-1.305.465-2.385 1.23-3.225c-.12-.3-.54-1.53.12-3.18c0 0 1.005-.315 3.3 1.23c.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23c.66 1.65.24 2.88.12 3.18c.765.84 1.23 1.905 1.23 3.225c0 4.605-2.805 5.625-5.475 5.925c.435.375.81 1.095.81 2.22c0 1.605-.015 2.895-.015 3.3c0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  Code
+                </a>
+                <a
+                  href={project.deployedLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 hover:scale-105"
+                >
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Live Demo
+                </a>
+              </div>
+              
+              {/* Decorative hover indicator */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-xl"></div>
+            </div>
           ))}
+        </div>
+        
+        {/* Enhanced Footer with view more button */}
+        <div className="flex justify-center mt-16">
+          <button className="group relative px-6 py-3 overflow-hidden rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-white font-medium hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+            <span className="relative z-10 flex items-center">
+              View More Projects
+              <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          </button>
         </div>
       </div>
     </section>
