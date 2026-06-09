@@ -9,18 +9,27 @@ import SectionStats from './SectionStats';
 const README_LIVE_LINKS = {
   'AI-Noteboook-Board': 'https://ai-noteboook-board.onrender.com',
   'Ecommerce-website-Reactjs-Vite-frontend': 'https://ecommerce-website-reactjs-vite-frontend.onrender.com',
-  'MakeMyTrip_Frontend': 'https://make-my-trip-frontend-shi.vercel.app',
   'MovieFlix-App-Dataset': 'https://movie-flix-app-dataset.vercel.app',
   'Student-Records-App-Frontend': 'https://student-records-app-frontend.vercel.app',
   'GEMINI_multimodel_app': 'https://gemini-multimodel-app.onrender.com',
-  'Multiple-Model-RAG-Usecases': 'https://mml-test.vercel.app',
   'CarCatalog_MyGarage-Frontend': 'https://car-catalog-my-garage-frontend.vercel.app',
   'TodoList-with-Auth-Assign-Frontend': 'https://todo-list-with-auth-assign-frontend.vercel.app',
   'T-A-Data-Submission-Form---Frontend': 'https://t-a-data-submission-form-frontend.vercel.app',
-  'chatapp-websocket': 'https://chatapp-websocket-server.vercel.app',
-  'Blog-App-Python': 'https://blog-app-python.vercel.app',
   'FlaskAdminPost': 'https://flaskadminpost.onrender.com',
   'satyamjaysawal-Responsive-Portfolio-using-HTML-CSS-JS': 'https://satyam-portfolio-website.vercel.app',
+};
+
+// Verified broken/unavailable demos — hide Live/Demo buttons for these URLs
+const INVALID_DEPLOYED_LINKS = new Set([
+  'https://make-my-trip-frontend-shi.vercel.app',
+  'https://mml-test.vercel.app',
+  'https://chatapp-websocket-server.vercel.app',
+  'https://blog-app-python.vercel.app',
+]);
+
+const sanitizeDeployedLink = (link = '') => {
+  const normalized = link.trim().replace(/\/$/, '');
+  return normalized && !INVALID_DEPLOYED_LINKS.has(normalized) ? link.trim() : '';
 };
 
 const GITHUB_TOP_PRIORITY = [
@@ -37,7 +46,9 @@ const getRepoSlug = (githubLink = '') => githubLink.split('/').filter(Boolean).p
 const applyReadmeLiveLinks = (projects) =>
   projects.map((project) => ({
     ...project,
-    deployedLink: README_LIVE_LINKS[getRepoSlug(project.githubLink)] || project.deployedLink || '',
+    deployedLink: sanitizeDeployedLink(
+      README_LIVE_LINKS[getRepoSlug(project.githubLink)] || project.deployedLink || '',
+    ),
   }));
 
 const sortGithubProjects = (projects) =>
@@ -79,7 +90,7 @@ const githubProjectsData = [
     tech: ['React', 'Node.js', 'Express', 'MongoDB'],
     imageUrl: '/projects/github/makemytrip-clone.jpg',
     githubLink: 'https://github.com/satyamjaysawal/MakeMyTrip_Frontend',
-    deployedLink: 'https://make-my-trip-frontend-shi.vercel.app',
+    deployedLink: '',
   },
   {
     id: 37,
@@ -129,7 +140,7 @@ const githubProjectsData = [
     tech: ['Python', 'RAG', 'LLM', 'HTML'],
     imageUrl: '/projects/github/multiple-model-rag.jpg',
     githubLink: 'https://github.com/satyamjaysawal/Multiple-Model-RAG-Usecases',
-    deployedLink: 'https://mml-test.vercel.app',
+    deployedLink: '',
   },
   {
     id: 32,
@@ -169,7 +180,7 @@ const githubProjectsData = [
     tech: ['JavaScript', 'WebSocket', 'Node.js'],
     imageUrl: '/projects/github/chatapp-websocket.jpg',
     githubLink: 'https://github.com/satyamjaysawal/chatapp-websocket',
-    deployedLink: 'https://chatapp-websocket-server.vercel.app',
+    deployedLink: '',
   },
   {
     id: 38,
@@ -179,7 +190,7 @@ const githubProjectsData = [
     tech: ['Python', 'Flask', 'HTML'],
     imageUrl: '/projects/github/blog-app-python.jpg',
     githubLink: 'https://github.com/satyamjaysawal/Blog-App-Python',
-    deployedLink: 'https://blog-app-python.vercel.app',
+    deployedLink: '',
   },
   {
     id: 41,
@@ -396,7 +407,7 @@ const featuredProjects = [
     tech: ['React.js', 'Redux', 'Node.js', 'Express.js', 'MongoDB', 'Tailwind CSS'],
     imageUrl: '/projects/github/makemytrip-clone.jpg',
     githubLink: 'https://github.com/satyamjaysawal/MakeMyTrip_Frontend',
-    deployedLink: 'https://make-my-trip-frontend-shi.vercel.app',
+    deployedLink: '',
   },
   {
     id: 'fp-3',
@@ -418,7 +429,7 @@ const featuredProjects = [
     tech: ['Python', 'Streamlit', 'Gemini API', 'FAISS', 'RAG'],
     imageUrl: '/projects/github/gemini-multimodel-app.jpg',
     githubLink: 'https://github.com/satyamjaysawal/Multiple-Model-RAG-Usecases',
-    deployedLink: 'https://mml-test.vercel.app',
+    deployedLink: '',
   },
   {
     id: 'fp-5',
