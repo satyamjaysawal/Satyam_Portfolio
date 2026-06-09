@@ -1,189 +1,171 @@
-import React from "react";
-import { Briefcase, Calendar, MapPin, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+import { Briefcase, Calendar, MapPin, ChevronRight, ChevronDown, Building2 } from "lucide-react";
+import { getExperienceText, CAREER_START_LABEL } from "../utils/experience";
+import { COMPANIES } from "../data/companyProjects";
+import SectionShell from "./SectionShell";
+import SectionHeader from "./SectionHeader";
+import SectionStats from "./SectionStats";
 
-const experiences = [
-  {
-    id: 1,
-    role: 'AI Engineer & Full Stack Developer',
-    company: 'Capgemini India',
-    location: 'Mumbai, India (Remote)',
-    projectName: 'H&K Holland & Knight - AI Chatbot Development',
-    duration: 'Dec 2022 - Present',
-    description: [
-      'Developed an AI-powered chatbot for Microsoft Teams, enhancing ITSM knowledge retrieval.',
-      'Integrated **Azure OpenAI** for intent classification and content summarization to improve response accuracy.',
-      'Built a data pipeline to extract and index documents from SharePoint using **Azure Cognitive Search**.',
-      'Connected the bot to **ServiceNow** KB articles, delivering formatted responses via adaptive cards.',
-      'Implemented scalable backend services using **FastAPI**, **Azure Functions**, and **CosmosDB**.',
-      'Automated workflows with **Azure Logic Apps** and utilized **Document Intelligence** for OCR-based text extraction.',
-      'Integrated **Power BI** dashboards for monitoring chatbot performance and user engagement.'
-    ],
-    techStack: ['FastAPI', 'Azure Functions', 'CosmosDB', 'App Service', 'Unstructured.io', 'Bot Service', 'Cognitive Search', 'Power BI', 'Logic Apps', 'Blob Storage', 'ServiceNow', 'Document Intelligence', 'Azure OpenAI', 'SharePoint']
-  },
-  {
-    id: 2,
-    role: 'AI Engineer & Full Stack Developer',
-    company: 'Capgemini India',
-    location: 'Mumbai, India (Remote)',
-    projectName: 'Skoda Project - AI-Powered Chatbot & Document Processing Suite',
-    duration: 'Feb 2023 - Present',
-    description: [
-      'Developed an AI-powered chatbot to automate document analysis, query handling, and data extraction, enhancing customer-service team interactions.',
-      'Implemented "Ask to Files", enabling users to query uploaded documents for summaries, key data, and specific clauses.',
-      'Created "Ask to URL", allowing users to retrieve insights from web pages, simplifying information extraction.',
-      'Designed a Document Comparison feature for side-by-side analysis, highlighting key differences and similarities.',
-      'Integrated OpenAI API and NLP models for improved chatbot accuracy and contextual understanding.'
-    ],
-    techStack: ['Python (Flask)', 'Streamlit', 'Azure', 'OpenAI API', 'BeautifulSoup', 'Langchain', 'Fine-tuning', 'NLP models', 'Pandas', 'SQL']
-  },
-  {
-    id: 3,
-    role: 'Python Developer & AI Engineer',
-    company: 'Capgemini India',
-    location: 'Mumbai, India (Remote)',
-    projectName: 'Amplifier Knowledge Mining & GenAIHUB',
-    duration: 'Jul 2023 - Present',
-    description: [
-      'Developed a data-driven application using Python and Flask for the Amplifier Knowledge Mining & GenAIHUB project.',
-      'Diagnosed and resolved data-related issues to ensure consistent application reliability.',
-      'Applied data-driven improvements to enhance usability and meet evolving business needs.',
-      'Developed new features using GenAI and OpenAI, improving the application analytical capabilities and user experience.',
-      'Managed database operations in MongoDB and MySQL, optimizing queries for enhanced data integrity and performance with SQLAlchemy.',
-      'Implemented strong data security measures to minimize vulnerabilities and ensure secure data access.'
-    ],
-    techStack: ['Python', 'Flask', 'MongoDB', 'MySQL', 'SQLAlchemy', 'OpenAI', 'GenAI', 'Security measures']
-  },
-  {
-    id: 4,
-    role: 'Java Web Application Support and Maintenance',
-    company: 'Capgemini India',
-    location: 'Mumbai, India (Remote)',
-    projectName: 'Liberty Mutual Account',
-    duration: 'Oct 2022 - Present',
-    description: [
-      'Provided comprehensive support for a web-based application utilizing Java, Servlets, JSP, Spring MVC, Spring Boot, and Oracle SQL.',
-      'Collaborated with the development team to diagnose and resolve issues raised by end-users.',
-      'Implemented bug fixes and enhancements to improve application usability and accommodate changing business requirements.',
-      'Ensured timely resolution of support tickets in adherence to service-level agreements (SLAs).',
-      'Developed custom Servlets and JSP pages to introduce new features and functionalities.'
-    ],
-    techStack: ['Java', 'Servlets', 'JSP', 'Spring MVC', 'Spring Boot', 'Oracle SQL', 'Dependency Injection', 'Oracle DB']
-  }
-];
+const VISIBLE_BULLETS = 3;
 
-const Experience = () => {
+const ProjectCard = ({ project, companyColor, defaultOpen = false }) => {
+  const [expanded, setExpanded] = useState(defaultOpen);
+  const hasMore = project.description.length > VISIBLE_BULLETS;
+  const visibleBullets = expanded ? project.description : project.description.slice(0, VISIBLE_BULLETS);
+
   return (
-    <section
-      id="experience"
-      className="relative py-24 px-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden"
-    >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-600/10 rounded-full blur-3xl animate-pulse delay-500" />
-        <div className="absolute top-1/2 left-1/4 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-700" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+    <div className="inner-card hover:border-purple-400/30 transition-colors">
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex-1 min-w-0">
+          <h4 className={`text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r ${companyColor} leading-snug`}>
+            {project.projectName}
+          </h4>
+          <p className="text-[11px] text-cyan-700 dark:text-cyan-300 mt-0.5">{project.role}</p>
+        </div>
+        <Briefcase className="w-4 h-4 text-purple-500 dark:text-purple-400 shrink-0 mt-0.5" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto text-left">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center space-x-4 mb-4">
-            <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-purple-400" />
-            <span className="text-purple-400 font-medium tracking-wider text-sm">PROFESSIONAL JOURNEY</span>
-            <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-purple-400" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-6">
-            Work Experience
-          </h2>
-          <p className="text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed text-gray-300">
-            Building cutting-edge AI solutions and applications across diverse industries
-          </p>
-        </div>
+      <ul className="space-y-1.5">
+        {visibleBullets.map((line, idx) => (
+          <li key={idx} className="flex items-start text-[11px] sm:text-xs text-muted leading-snug">
+            <ChevronRight className="w-3 h-3 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0" />
+            <span className="ml-1.5">{line}</span>
+          </li>
+        ))}
+      </ul>
 
-        {/* Experience Timeline */}
-        <div className="space-y-12">
-          {experiences.map((exp, index) => (
-            <div key={exp.id} className="relative">
-              {/* Timeline connector */}
-              {index < experiences.length - 1 && (
-                <div className="absolute left-8 top-16 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-transparent" />
-              )}
-              
-              <div className="flex flex-col md:flex-row gap-6">
-                {/* Timeline icon */}
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                    <Briefcase className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                
-                {/* Content card */}
-                <div className="flex-1 bg-gray-800/70 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
-                  {/* Header */}
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                        {exp.role}
-                      </h3>
-                      <p className="text-lg font-semibold text-white">{exp.projectName}</p>
-                    </div>
-                    <span className="mt-2 md:mt-0 px-4 py-1 rounded-full bg-purple-900/50 border border-purple-700/50 text-purple-300 text-sm flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {exp.duration}
-                    </span>
-                  </div>
-                  
-                  {/* Company & Location */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 text-gray-400">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-2">
-                        <Briefcase className="w-4 h-4" />
-                      </div>
-                      {exp.company}
-                    </div>
-                    <div className="hidden sm:block text-gray-600">•</div>
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-2">
-                        <MapPin className="w-4 h-4" />
-                      </div>
-                      {exp.location}
-                    </div>
-                  </div>
-                  
-                  {/* Description */}
-                  <div className="mb-6">
-                    <ul className="space-y-2">
-                      {exp.description.map((line, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <ChevronRight className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-300 ml-2">{line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  {/* Tech Stack */}
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-400 mb-3">Technologies & Tools</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {exp.techStack.map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 text-xs rounded-full bg-gradient-to-r from-purple-600/40 to-pink-600/40 text-gray-200 border border-purple-500/30 hover:from-purple-500/60 hover:to-pink-500/60 transition-colors duration-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="mt-2 text-[10px] font-medium text-purple-600 dark:text-purple-400 hover:underline"
+        >
+          {expanded ? "Show less" : `+${project.description.length - VISIBLE_BULLETS} more highlights`}
+        </button>
+      )}
+
+      {project.dataSources?.length > 0 && (
+        <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700/40">
+          <p className="text-[9px] font-semibold text-subtle uppercase tracking-wider mb-1.5">
+            {project.dataSourceTheme === 'purple' ? 'Knowledge Bases & Integrations' : 'Labor Market Data Sources'}
+          </p>
+          <div className="grid sm:grid-cols-2 gap-1.5">
+            {project.dataSources.map((source) => (
+              <div
+                key={source.platform}
+                className={
+                  project.dataSourceTheme === 'purple'
+                    ? 'rounded-md bg-purple-50/80 dark:bg-purple-500/5 border border-purple-200/60 dark:border-purple-500/15 px-2 py-1.5'
+                    : 'rounded-md bg-emerald-50/80 dark:bg-emerald-500/5 border border-emerald-200/60 dark:border-emerald-500/15 px-2 py-1.5'
+                }
+              >
+                <p
+                  className={
+                    project.dataSourceTheme === 'purple'
+                      ? 'text-[10px] font-semibold text-purple-800 dark:text-purple-300'
+                      : 'text-[10px] font-semibold text-emerald-800 dark:text-emerald-300'
+                  }
+                >
+                  {source.platform}
+                </p>
+                <p className="text-[9px] text-muted leading-snug">{source.dataType}</p>
+                <p className="text-[9px] text-subtle">{source.ingestion} · {source.frequency}</p>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700/40">
+        <p className="text-[9px] font-semibold text-subtle uppercase tracking-wider mb-1.5">Tech Stack</p>
+        <div className="flex flex-wrap gap-1">
+          {project.techStack.map((tech) => (
+            <span key={tech} className="skill-chip-sm">{tech}</span>
           ))}
         </div>
       </div>
-    </section>
+    </div>
+  );
+};
+
+const Experience = () => {
+  const [expandedCompanies, setExpandedCompanies] = useState({ deloitte: true, capgemini: false });
+
+  const toggleCompany = (id) => setExpandedCompanies((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const totalProjects = COMPANIES.reduce((sum, c) => sum + c.projects.length, 0);
+
+  return (
+    <SectionShell id="experience">
+        <SectionHeader
+          label="Professional Journey"
+          title="Work Experience"
+          description={`${getExperienceText()} building enterprise AI solutions at Deloitte & Capgemini (since ${CAREER_START_LABEL})`}
+        />
+
+        <SectionStats
+          stats={[
+            { label: "Companies", value: COMPANIES.length },
+            { label: "Projects", value: totalProjects },
+            { label: "Focus", value: "GenAI & Full Stack" },
+          ]}
+        />
+
+        <div className="space-y-3">
+          {COMPANIES.map((company) => (
+            <div
+              key={company.id}
+              className={`card-surface rounded-xl overflow-hidden border-l-[3px] ${company.borderAccent}`}
+            >
+              <button
+                type="button"
+                onClick={() => toggleCompany(company.id)}
+                className="w-full flex items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`shrink-0 w-9 h-9 rounded-lg bg-gradient-to-br ${company.color} flex items-center justify-center`}>
+                    <Building2 className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">
+                      {company.company}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[10px] sm:text-[11px] text-subtle">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {company.duration}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {company.location}
+                      </span>
+                      <span className="text-purple-600 dark:text-purple-400 font-medium">
+                        {company.projects.length} project{company.projects.length > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${expandedCompanies[company.id] ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              {expandedCompanies[company.id] && (
+                <div className="px-3.5 sm:px-4 pb-3.5 sm:pb-4 space-y-2.5 border-t border-gray-200 dark:border-gray-700/50">
+                  {company.projects.map((project, pIdx) => (
+                    <ProjectCard
+                      key={pIdx}
+                      project={project}
+                      companyColor={company.color}
+                      defaultOpen={pIdx === 0 && company.id === "deloitte"}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+    </SectionShell>
   );
 };
 

@@ -1,186 +1,222 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Linkedin, Send, Sparkles } from 'lucide-react';
+import { Mail, Phone, Linkedin, Send, Github, MapPin, ExternalLink, MessageCircle } from 'lucide-react';
+import SectionShell from './SectionShell';
+import SectionHeader from './SectionHeader';
+
+const primaryContacts = [
+  {
+    icon: Mail,
+    label: 'Email',
+    value: 'sjrecm9258@gmail.com',
+    href: 'mailto:sjrecm9258@gmail.com',
+    accent: 'text-blue-600 dark:text-blue-400',
+    iconBg: 'bg-blue-100 dark:bg-blue-500/15',
+  },
+  {
+    icon: Phone,
+    label: 'Phone',
+    value: '+91 9258505088',
+    href: 'tel:+919258505088',
+    accent: 'text-purple-600 dark:text-purple-400',
+    iconBg: 'bg-purple-100 dark:bg-purple-500/15',
+  },
+  {
+    icon: MapPin,
+    label: 'Location',
+    value: 'Mumbai, India',
+    href: null,
+    accent: 'text-cyan-600 dark:text-cyan-400',
+    iconBg: 'bg-cyan-100 dark:bg-cyan-500/15',
+  },
+];
+
+const socialLinks = [
+  {
+    icon: Linkedin,
+    label: 'LinkedIn',
+    value: 'satyam-jaysawal',
+    href: 'https://www.linkedin.com/in/satyam-jaysawal-9b58b7238',
+    accent: 'text-sky-600 dark:text-sky-400',
+    iconBg: 'bg-sky-100 dark:bg-sky-500/15',
+  },
+  {
+    icon: Github,
+    label: 'GitHub',
+    value: 'satyamjaysawal',
+    href: 'https://github.com/satyamjaysawal',
+    accent: 'text-gray-700 dark:text-gray-300',
+    iconBg: 'bg-gray-100 dark:bg-gray-500/15',
+  },
+  {
+    icon: ExternalLink,
+    label: 'Portfolio',
+    value: 'satyam-portfolio-q196.onrender.com',
+    href: 'https://satyam-portfolio-q196.onrender.com/',
+    accent: 'text-pink-600 dark:text-pink-400',
+    iconBg: 'bg-pink-100 dark:bg-pink-500/15',
+  },
+];
 
 const Contact = () => {
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  
+  const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  
+
   const handleChange = (e) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value
-    });
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-      
-      // Reset form after showing success message
       setTimeout(() => {
         setSubmitted(false);
         setFormState({ name: '', email: '', message: '' });
       }, 3000);
     }, 1500);
   };
-  
-  return (
-    <section id="contact" className="relative min-h-screen py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Enhanced decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-pink-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
-      </div>
 
-      <div className="relative max-w-6xl mx-auto">
-        {/* Animated Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center space-x-4 mb-6">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400" />
-            <span className="text-purple-400 font-medium tracking-wider text-sm flex items-center">
-              <Sparkles className="h-4 w-4 mr-2" />
-              CONTACT ME
-            </span>
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-purple-400" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-6">
-            Get In Touch
-          </h2>
-          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
-            I'm always open to new opportunities and collaborations. Feel free to reach out to me via the contact details below or send me a message!
-          </p>
+  return (
+    <SectionShell id="contact" maxWidth="max-w-4xl">
+        <SectionHeader
+          label="Contact Me"
+          title="Get In Touch"
+          description="Open to full-time roles, freelance & AI engineering collaborations"
+          descriptionMaxWidth="max-w-sm"
+        />
+
+        <div className="grid sm:grid-cols-3 gap-2 mb-2.5">
+          {primaryContacts.map((item) => {
+            const Wrapper = item.href ? 'a' : 'div';
+            const linkProps = item.href
+              ? { href: item.href, target: item.href.startsWith('http') ? '_blank' : undefined, rel: 'noopener noreferrer' }
+              : {};
+
+            return (
+              <Wrapper
+                key={item.label}
+                {...linkProps}
+                className="group flex items-center gap-2.5 card-surface rounded-lg p-2.5 hover:border-purple-400/40 transition-all"
+              >
+                <div className={`shrink-0 w-8 h-8 rounded-md flex items-center justify-center ${item.iconBg}`}>
+                  <item.icon className={`w-3.5 h-3.5 ${item.accent}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[9px] text-subtle uppercase tracking-wider">{item.label}</p>
+                  <p className={`text-[11px] sm:text-xs font-medium truncate ${item.accent} group-hover:underline`}>
+                    {item.value}
+                  </p>
+                </div>
+              </Wrapper>
+            );
+          })}
         </div>
 
-        {/* Enhanced Contact Cards */}
-        <div className="flex flex-wrap justify-center gap-6 mb-12">
-          <div className="flex flex-col items-center bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl hover:bg-gray-800 transition-all duration-300 border border-gray-700 group w-64">
-            <div className="p-3 bg-blue-500/10 rounded-full mb-4 group-hover:bg-blue-500/20 transition-all duration-300">
-              <Mail className="text-blue-400 text-3xl group-hover:text-blue-300 transition-colors" />
-            </div>
-            <span className="font-semibold text-white mb-2">Email</span>
-            <a href="mailto:sjrecm9258@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors group-hover:underline">
-              sjrecm9258@gmail.com
-            </a>
-          </div>
-          
-          <div className="flex flex-col items-center bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl hover:bg-gray-800 transition-all duration-300 border border-gray-700 group w-64">
-            <div className="p-3 bg-purple-500/10 rounded-full mb-4 group-hover:bg-purple-500/20 transition-all duration-300">
-              <Phone className="text-purple-400 text-3xl group-hover:text-purple-300 transition-colors" />
-            </div>
-            <span className="font-semibold text-white mb-2">Phone</span>
-            <a href="tel:+919258505088" className="text-purple-400 hover:text-purple-300 transition-colors group-hover:underline">
-              +91 92585 05088
-            </a>
-          </div>
-          
-          <div className="flex flex-col items-center bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl hover:bg-gray-800 transition-all duration-300 border border-gray-700 group w-64">
-            <div className="p-3 bg-pink-500/10 rounded-full mb-4 group-hover:bg-pink-500/20 transition-all duration-300">
-              <Linkedin className="text-pink-400 text-3xl group-hover:text-pink-300 transition-colors" />
-            </div>
-            <span className="font-semibold text-white mb-2">LinkedIn</span>
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {socialLinks.map((item) => (
             <a
-              href="https://www.linkedin.com/in/satyam-jaysawal-9b58b7238"
+              key={item.label}
+              href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-400 hover:text-pink-300 transition-colors group-hover:underline"
+              className="group inline-flex items-center gap-2 card-surface rounded-full px-3 py-1.5 hover:border-purple-400/40 transition-all"
             >
-              linkedin.com/in/satyam-jaysawal
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${item.iconBg}`}>
+                <item.icon className={`w-3 h-3 ${item.accent}`} />
+              </div>
+              <span className={`text-[11px] font-medium ${item.accent} group-hover:underline`}>
+                {item.label}
+              </span>
             </a>
-          </div>
+          ))}
         </div>
 
-        {/* Enhanced Contact Form */}
-        <div className="w-full max-w-lg mx-auto">
-          <div className="bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-gray-700">
-            {submitted ? (
-              <div className="flex flex-col items-center justify-center py-6">
-                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-                  <Send className="text-green-400 h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Message Sent!</h3>
-                <p className="text-gray-400 text-center">Thank you for reaching out. I'll get back to you soon.</p>
+        <div className="card-surface rounded-xl p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 pb-3 border-b border-gray-200 dark:border-gray-700/50">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Send a Message</h3>
+              <p className="text-[10px] text-subtle mt-0.5">Share your project, job opportunity, or collaboration idea</p>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <MessageCircle className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+              <span className="text-[10px] text-subtle">Replies within 24 hrs</span>
+            </div>
+          </div>
+
+          {submitted ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mb-2">
+                <Send className="text-green-600 dark:text-green-400 w-4 h-4" />
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Message Sent!</h3>
+              <p className="text-subtle text-[11px]">Thank you — I&apos;ll get back to you soon.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="grid sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">Your Name</label>
-                  <input 
+                  <label htmlFor="name" className="block text-[10px] text-subtle mb-0.5">Name</label>
+                  <input
                     id="name"
                     name="name"
-                    type="text" 
+                    type="text"
                     value={formState.name}
                     onChange={handleChange}
-                    placeholder="John Doe" 
+                    placeholder="Your name"
                     required
-                    className="w-full p-4 border border-gray-700 rounded-lg bg-gray-900/80 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all duration-300"
+                    className="input-surface w-full px-2.5 py-1.5 rounded-md text-xs"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">Your Email</label>
-                  <input 
+                  <label htmlFor="email" className="block text-[10px] text-subtle mb-0.5">Email</label>
+                  <input
                     id="email"
                     name="email"
-                    type="email" 
+                    type="email"
                     value={formState.email}
                     onChange={handleChange}
-                    placeholder="john@example.com" 
+                    placeholder="your@email.com"
                     required
-                    className="w-full p-4 border border-gray-700 rounded-lg bg-gray-900/80 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all duration-300"
+                    className="input-surface w-full px-2.5 py-1.5 rounded-md text-xs"
                   />
                 </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-1">Your Message</label>
-                  <textarea 
-                    id="message"
-                    name="message"
-                    value={formState.message}
-                    onChange={handleChange}
-                    placeholder="Hello, I'd like to discuss a project..." 
-                    required
-                    className="w-full p-4 border border-gray-700 rounded-lg bg-gray-900/80 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all duration-300"
-                    rows="5"
-                  />
-                </div>
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full py-4 px-6 flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-lg hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300 font-medium"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </div>
-                  ) : (
-                    <span className="flex items-center">
-                      <Send className="h-5 w-5 mr-2" />
-                      Send Message
-                    </span>
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-[10px] text-subtle mb-0.5">Message</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formState.message}
+                  onChange={handleChange}
+                  placeholder="Tell me about your project or opportunity..."
+                  required
+                  rows="3"
+                  className="input-surface w-full px-2.5 py-1.5 rounded-md text-xs resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-2 flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium rounded-md hover:opacity-90 transition-all disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  'Sending...'
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5" />
+                    Send Message
+                  </>
+                )}
+              </button>
+            </form>
+          )}
         </div>
-      </div>
-    </section>
+    </SectionShell>
   );
 };
 

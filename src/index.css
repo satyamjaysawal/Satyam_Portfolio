@@ -70,5 +70,71 @@ button:focus-visible {
 
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  @apply bg-slate-50 text-gray-900 dark:bg-gray-950 dark:text-white transition-colors duration-300;
+}
+
+#root {
+  width: 100%;
+}
+
+@layer components {
+  .section-surface {
+    @apply relative overflow-hidden text-gray-900 dark:text-white;
+  }
+
+  .section-bg {
+    @apply bg-gradient-to-br from-slate-100 via-white to-purple-50/40 dark:from-gray-900 dark:via-black dark:to-gray-900;
+  }
+
+  .card-surface {
+    @apply bg-white dark:bg-gray-800/60 backdrop-blur-sm border border-gray-300 dark:border-gray-700/60 shadow-sm;
+  }
+
+  .text-muted {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  .text-subtle {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .heading-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-700 via-pink-600 to-cyan-600 dark:from-purple-400 dark:via-pink-400 dark:to-cyan-400;
+  }
+
+  .skill-chip {
+    @apply px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-800 border border-gray-300
+      dark:bg-gray-900/60 dark:text-gray-200 dark:border-gray-700/50
+      hover:border-purple-500/60 hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-all cursor-default;
+  }
+
+  .skill-chip-sm {
+    @apply px-2 py-0.5 text-[10px] leading-snug rounded-md bg-gray-100 text-gray-700 border border-gray-200
+      dark:bg-gray-800/80 dark:text-gray-300 dark:border-gray-700/40
+      hover:border-purple-400/50 hover:text-purple-700 dark:hover:text-purple-300 transition-colors cursor-default;
+  }
+
+  .input-surface {
+    @apply card-surface text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400
+      focus:outline-none focus:ring-2 focus:ring-purple-500/40;
+  }
+
+  .inner-card {
+    @apply bg-gray-50 dark:bg-gray-900/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700/40;
+  }
+
+  .grid-pattern {
+    @apply bg-[linear-gradient(to_right,#94a3b833_1px,transparent_1px),linear-gradient(to_bottom,#94a3b833_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)];
+  }
+}
 

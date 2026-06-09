@@ -1,0 +1,138 @@
+import {
+  Code,
+  Layers,
+  Brain,
+  Bot,
+  Database,
+  Sparkles,
+  FileSearch,
+  ShieldCheck,
+  Cloud,
+  Server,
+  BarChart3,
+  Workflow,
+  Globe,
+  Wrench,
+  GitBranch,
+  Coffee,
+  TestTube,
+} from 'lucide-react';
+
+export const SKILL_CATEGORIES = [
+  {
+    title: 'Programming Languages',
+    icon: Code,
+    color: 'from-blue-500 to-cyan-500',
+    skills: ['Python', 'Java', 'Go (Golang)', 'TypeScript', 'JavaScript', 'SQL', 'HTML', 'CSS'],
+  },
+  {
+    title: 'Frameworks & Libraries',
+    icon: Layers,
+    color: 'from-indigo-500 to-violet-500',
+    skills: ['Flask', 'Django', 'FastAPI', 'Streamlit', 'Celery', 'React JS', 'Next JS', 'Node JS', 'Express JS', 'Redux', 'Tailwind CSS'],
+  },
+  {
+    title: 'GenAI & LLM Frameworks',
+    icon: Brain,
+    color: 'from-violet-500 to-fuchsia-500',
+    skills: ['LangChain', 'LangServe', 'LlamaIndex', 'Semantic Kernel', 'Pydantic AI', 'Hugging Face Transformers', 'Gradio', 'Ollama'],
+  },
+  {
+    title: 'LLMs & Foundation Models',
+    icon: Sparkles,
+    color: 'from-fuchsia-500 to-pink-500',
+    skills: ['OpenAI GPT-4o', 'GPT-4.1', 'o1/o3 Reasoning', 'Claude 3.5/3.7 Sonnet', 'Claude Opus', 'Gemini 1.5/2.0 Pro', 'Gemini Flash', 'Meta Llama 3/4', 'Mistral'],
+  },
+  {
+    title: 'Agentic AI & Orchestration',
+    icon: Bot,
+    color: 'from-purple-500 to-indigo-500',
+    skills: ['Multi-Agent Systems', 'ReAct', 'Tool Use', 'Function Calling', 'MCP', 'Agent2Agent (A2A)', 'Agent Memory', 'LangGraph Agents', 'AutoGen', 'CrewAI', 'Workflow Orchestration', 'OpenAI Agents SDK', 'Swarm'],
+  },
+  {
+    title: 'RAG & Vector Search',
+    icon: FileSearch,
+    color: 'from-emerald-500 to-teal-500',
+    skills: ['RAG', 'Hybrid Search', 'Re-ranking', 'GraphRAG', 'Agentic RAG', 'Semantic Search', 'Chunking', 'Tokenization', 'Embeddings', 'FAISS', 'Qdrant', 'Pinecone', 'Chroma', 'Weaviate', 'Milvus', 'pgvector', 'Azure AI Search'],
+  },
+  {
+    title: 'NLP, Deep Learning & Fine-tuning',
+    icon: Brain,
+    color: 'from-orange-500 to-amber-500',
+    skills: ['Prompt Engineering', 'Few-shot Learning', 'Zero-shot Learning', 'LoRA', 'QLoRA', 'PEFT', 'RLHF', 'Instruction Tuning', 'NLP Pipelines', 'Haystack', 'DSPy'],
+  },
+  {
+    title: 'Multimodal AI & Document Intelligence',
+    icon: FileSearch,
+    color: 'from-cyan-500 to-blue-500',
+    skills: ['Computer Vision', 'OCR Pipelines', 'Azure Document Intelligence', 'Unstructured.io', 'Vision-Language Models (VLMs)', 'Image Captioning', 'Whisper', 'Audio/Video Transcription', 'PDF/Document Chat'],
+  },
+  {
+    title: 'AI Quality Assurance & Testing',
+    icon: ShieldCheck,
+    color: 'from-rose-500 to-red-500',
+    skills: ['RAGAS', 'DeepEval', 'LangSmith', 'Promptfoo', 'Model Validation', 'Hallucination Detection', 'Bias Detection & Audits', 'Adversarial Testing', 'Model Drift Monitoring', 'Data Quality Validation', 'AI Fairness & Explainability', 'Pytest Test Automation', 'Regression Testing', 'Ground Truth Dataset', 'Non-deterministic Testing'],
+  },
+  {
+    title: 'Cloud AI Platforms',
+    icon: Cloud,
+    color: 'from-sky-500 to-blue-600',
+    skills: ['Microsoft 365 Copilot', 'Copilot Studio', 'Azure AI Foundry', 'Azure OpenAI (Prompt Flow)', 'Azure Machine Learning', 'Azure Cognitive Services', 'Azure AI Vision', 'Azure Bot Service', 'Microsoft Graph API', 'AWS Bedrock', 'SageMaker', 'Kendra', 'OpenSearch Serverless'],
+  },
+  {
+    title: 'Cloud, DevOps & Containers',
+    icon: Server,
+    color: 'from-slate-500 to-gray-600',
+    skills: ['AWS EC2', 'S3', 'Lambda', 'ECS', 'Azure DevOps/ADO', 'Azure Pipelines', 'App Services', 'Azure Functions', 'Logic Apps', 'Blob Storage', 'SharePoint', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform'],
+  },
+  {
+    title: 'Databases',
+    icon: Database,
+    color: 'from-teal-500 to-green-600',
+    skills: ['PostgreSQL', 'MySQL', 'MongoDB', 'CosmosDB', 'Redis', 'SQLAlchemy'],
+  },
+  {
+    title: 'ML & Data Science',
+    icon: BarChart3,
+    color: 'from-amber-500 to-orange-600',
+    skills: ['Scikit-learn', 'TensorFlow', 'Keras', 'PyTorch', 'LightGBM', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly', 'OpenCV', 'XGBoost'],
+  },
+  {
+    title: 'MLOps & LLMOps',
+    icon: Workflow,
+    color: 'from-indigo-500 to-purple-600',
+    skills: ['MLflow', 'Kubeflow', 'Model Monitoring', 'Drift Detection', 'LangSmith Evals', 'A/B Testing', 'Guardrails AI'],
+  },
+  {
+    title: 'API Development & Protocols',
+    icon: Globe,
+    color: 'from-blue-500 to-indigo-500',
+    skills: ['REST APIs', 'GraphQL', 'gRPC', 'WebSocket', 'Microservices', 'API Integration', 'Postman'],
+  },
+  {
+    title: 'System Design & Engineering',
+    icon: Wrench,
+    color: 'from-gray-500 to-zinc-600',
+    skills: ['Low-Level Design (LLD)', 'High-Level Design (HLD)', 'ETL Pipelines', 'Event-Driven Architecture', 'Serverless', 'DSA', 'BeautifulSoup', 'Selenium'],
+  },
+  {
+    title: 'Version Control & Methodology',
+    icon: GitBranch,
+    color: 'from-green-500 to-emerald-600',
+    skills: ['Git', 'GitHub', 'GitLab', 'JIRA', 'Agile Methodologies', 'Scrum', 'SDLC'],
+  },
+  {
+    title: 'Java Technologies',
+    icon: Coffee,
+    color: 'from-red-500 to-orange-500',
+    skills: ['Core Java', 'Advanced Java', 'Spring Boot', 'Spring Batch', 'Hibernate', 'Servlet', 'JSP', 'Struts'],
+  },
+  {
+    title: 'Testing Tools',
+    icon: TestTube,
+    color: 'from-pink-500 to-rose-500',
+    skills: ['Pytest', 'Selenium', 'Postman', 'Test Automation Framework', 'API Testing', 'Performance Benchmarking'],
+  },
+];
+
+export const TOTAL_SKILLS = SKILL_CATEGORIES.reduce((sum, cat) => sum + cat.skills.length, 0);
