@@ -11,6 +11,7 @@ node_modules
 dist
 agent-tools/
 scripts/
+terminals/
 dist-ssr
 *.local
 
